@@ -29,7 +29,7 @@ const OTPInput = forwardRef<HTMLInputElement, OTPInputProps>(
         });
         setOtp(newOtp);
       }
-    }, [value, length]);
+    }, [value, length, otp]);
 
     const handleChange = (element: HTMLInputElement, index: number) => {
       const val = element.value;
@@ -181,4 +181,3 @@ const OTPInput = forwardRef<HTMLInputElement, OTPInputProps>(
 OTPInput.displayName = 'OTPInput';
 
 export default OTPInput;
-

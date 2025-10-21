@@ -1,5 +1,13 @@
+export { ContentViewer } from './content-viewer';
 export { CourseCard } from './course-card';
 export { CourseContent } from './course-content';
+export { CourseCurriculum } from './course-curriculum';
+export { CourseDescription } from './course-description';
+export { CourseDetailsContent } from './course-details-content';
+export { CourseDetailsHero } from './course-details-hero';
+export { CourseDetailsMain } from './course-details-main';
 export { CourseModulesSection } from './course-modules-section';
+export { CourseStats } from './course-stats';
+export { CourseVideoPlayer } from './course-video-player';
 export { HeroBanner } from './hero-banner';
 export { ProgressSection } from './progress-section';

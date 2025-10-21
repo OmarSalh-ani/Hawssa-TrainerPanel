@@ -1,7 +1,6 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import {
   Form,
   FormControl,
@@ -41,9 +40,11 @@ export default function LoginForm() {
     try {
       setIsLoading(true);
       const response = await login(data);
+      console.log(response);
 
       if (response.success && response.data?.token) {
         setToken(response.data.token);
+        console.log(response.data.token);
         toast.success('Login successful! Welcome back.');
         router.push('/');
       } else {
@@ -124,27 +125,6 @@ export default function LoginForm() {
           />
 
           <div className='flex items-center justify-between'>
-            <FormField
-              control={form.control}
-              name='rememberMe'
-              render={({ field }) => (
-                <FormItem className='flex flex-row items-start space-x-3 space-y-0'>
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      className='border-gray-300 data-[state=checked]:bg-yellow-500 data-[state=checked]:border-yellow-500'
-                    />
-                  </FormControl>
-                  <div className='space-y-1 leading-none'>
-                    <FormLabel className='text-sm text-gray-900 cursor-pointer'>
-                      Remember me
-                    </FormLabel>
-                  </div>
-                </FormItem>
-              )}
-            />
-
             <Link
               href='/forgot-password'
               className='text-sm font-medium text-yellow-600 hover:text-yellow-500'

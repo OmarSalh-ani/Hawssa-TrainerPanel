@@ -233,7 +233,7 @@ const CountrySelectOption = ({
   onChange,
   onSelectComplete,
 }: CountrySelectOptionProps) => {
-  const handleSelect = (value: string) => {
+  const handleSelect = () => {
     console.log('Country selected:', country, countryName);
     onChange(country);
     onSelectComplete();
@@ -242,7 +242,7 @@ const CountrySelectOption = ({
   return (
     <div
       className='flex items-center gap-2 px-2 py-1.5 text-sm cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-sm'
-      onClick={() => handleSelect(country)}
+      onClick={handleSelect}
     >
       <FlagComponent country={country} countryName={countryName} />
       <span className='flex-1 text-sm'>{countryName}</span>

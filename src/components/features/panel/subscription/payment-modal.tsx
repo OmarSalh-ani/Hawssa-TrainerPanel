@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { SubscriptionPlan } from '@/lib/types/subscription';
-import { Camera, Phone, X } from 'lucide-react';
+import { Camera, Phone } from 'lucide-react';
 import { useState } from 'react';
 
 interface PaymentModalProps {
@@ -93,7 +93,6 @@ export function PaymentModal({ isOpen, onClose, plan }: PaymentModalProps) {
             <DialogTitle className='text-lg font-semibold'>Subscribe {plan.title}</DialogTitle>
             <span className='text-xl font-bold text-yellow-400'>{plan.price}</span>
           </div>
-         
         </DialogHeader>
 
         <div className='space-y-6'>

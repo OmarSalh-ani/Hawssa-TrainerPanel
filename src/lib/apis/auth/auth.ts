@@ -1,4 +1,4 @@
-'use server';
+// 'use server';
 
 import {
   ForgotPasswordStep1Request,
@@ -14,7 +14,8 @@ import {
   RegistrationStep2Request,
   RegistrationStep2Response,
 } from '@/lib/types/auth';
-import { ApiResponse, post } from '@/lib/utils/api';
+import { ApiResponse } from '@/lib/utils/api';
+import { callAPI } from '@/lib/utils/config';
 
 /**
  * Login user
@@ -27,7 +28,8 @@ export const login = async (
   lang: string = 'en',
 ): Promise<ApiResponse<LoginResponse>> => {
   const endpoint = `/api/${lang}/auth/login`;
-  return await post<LoginResponse>(endpoint, data);
+  const response = await callAPI('POST', endpoint, data);
+  return response as ApiResponse<LoginResponse>;
 };
 
 /**
@@ -41,7 +43,8 @@ export const registerStep1 = async (
   lang: string = 'en',
 ): Promise<ApiResponse<RegistrationStep1Response>> => {
   const endpoint = `/api/${lang}/auth/register`;
-  return await post<RegistrationStep1Response>(endpoint, data);
+  const response = await callAPI('POST', endpoint, data);
+  return response as ApiResponse<RegistrationStep1Response>;
 };
 
 /**
@@ -55,7 +58,8 @@ export const verifyRegistrationOTP = async (
   lang: string = 'en',
 ): Promise<ApiResponse<RegistrationStep2Response>> => {
   const endpoint = `/api/${lang}/auth/verify-registration-otp`;
-  return await post<RegistrationStep2Response>(endpoint, data);
+  const response = await callAPI('POST', endpoint, data);
+  return response as ApiResponse<RegistrationStep2Response>;
 };
 
 /**
@@ -69,7 +73,8 @@ export const requestPasswordReset = async (
   lang: string = 'en',
 ): Promise<ApiResponse<ForgotPasswordStep1Response>> => {
   const endpoint = `/api/${lang}/auth/request-password-reset`;
-  return await post<ForgotPasswordStep1Response>(endpoint, data);
+  const response = await callAPI('POST', endpoint, data);
+  return response as ApiResponse<ForgotPasswordStep1Response>;
 };
 
 /**
@@ -83,7 +88,8 @@ export const verifyPasswordResetOTP = async (
   lang: string = 'en',
 ): Promise<ApiResponse<ForgotPasswordStep2Response>> => {
   const endpoint = `/api/${lang}/auth/verify-password-reset-otp`;
-  return await post<ForgotPasswordStep2Response>(endpoint, data);
+  const response = await callAPI('POST', endpoint, data);
+  return response as ApiResponse<ForgotPasswordStep2Response>;
 };
 
 /**
@@ -97,5 +103,6 @@ export const completePasswordReset = async (
   lang: string = 'en',
 ): Promise<ApiResponse<ForgotPasswordStep3Response>> => {
   const endpoint = `/api/${lang}/auth/complete-password-reset`;
-  return await post<ForgotPasswordStep3Response>(endpoint, data);
+  const response = await callAPI('POST', endpoint, data);
+  return response as ApiResponse<ForgotPasswordStep3Response>;
 };

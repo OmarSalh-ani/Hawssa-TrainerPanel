@@ -1,6 +1,8 @@
 import { Button } from '@/components/ui/button';
-import { Course } from '@/lib/data/courses';
+import { Course } from '@/lib/types/courses';
 import { Lock, Play } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
 
 interface CourseCardProps {
   course: Course;
@@ -9,11 +11,11 @@ interface CourseCardProps {
 export function CourseCard({ course }: CourseCardProps) {
   const getStatusColor = (status: Course['status']) => {
     switch (status) {
-      case 'completed':
+      case 'Completed':
         return 'bg-green-100 text-green-800 border-green-200';
-      case 'in-progress':
+      case 'In Progress':
         return 'bg-orange-100 text-orange-800 border-orange-200';
-      case 'not-started':
+      case 'Not Started':
         return 'bg-gray-100 text-gray-600 border-gray-200';
       default:
         return 'bg-gray-100 text-gray-600 border-gray-200';
@@ -22,11 +24,11 @@ export function CourseCard({ course }: CourseCardProps) {
 
   const getStatusText = (status: Course['status']) => {
     switch (status) {
-      case 'completed':
+      case 'Completed':
         return 'Completed';
-      case 'in-progress':
+      case 'In Progress':
         return 'In Progress';
-      case 'not-started':
+      case 'Not Started':
         return 'Not Started';
       default:
         return 'Not Started';
@@ -35,14 +37,27 @@ export function CourseCard({ course }: CourseCardProps) {
 
   const getButtonVariant = (status: Course['status']) => {
     switch (status) {
-      case 'completed':
+      case 'Completed':
         return 'default';
-      case 'in-progress':
+      case 'In Progress':
         return 'default';
-      case 'not-started':
+      case 'Not Started':
         return 'outline';
       default:
         return 'outline';
+    }
+  };
+
+  const getButtonText = (status: Course['status']) => {
+    switch (status) {
+      case 'Completed':
+        return 'Review Course';
+      case 'In Progress':
+        return 'Continue Learning';
+      case 'Not Started':
+        return 'Start Course';
+      default:
+        return 'Start Course';
     }
   };
 
@@ -50,12 +65,12 @@ export function CourseCard({ course }: CourseCardProps) {
     <div className='bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200'>
       {/* Course Image */}
       <div className='relative aspect-video bg-gray-100'>
-        <img src={course.image} alt={course.title} className='w-full h-full object-cover' />
+        <Image src={course.image} alt={course.title} fill className='object-cover' />
 
         {/* Video Count Badge */}
         <div className='absolute top-3 right-3 bg-yellow-400 text-gray-800 px-2 py-1 rounded-md text-sm font-medium flex items-center gap-1'>
           <Play className='w-3 h-3' />
-          {course.videoCount} Video Class
+          {course.videosCount} Video Class
         </div>
 
         {/* Lock Overlay for locked courses */}
@@ -88,31 +103,31 @@ export function CourseCard({ course }: CourseCardProps) {
 
         {/* Course Details */}
         <div className='space-y-2 mb-6'>
-          {course.status === 'completed' && course.completionDate && (
+          {course.status === 'Completed' && (
             <div className='text-sm text-gray-500'>
-              Certificate earned on {course.completionDate}
+              Certificate earned on {new Date(course.uploadDate).toLocaleDateString()}
             </div>
           )}
 
-          {course.status === 'in-progress' && course.progress && course.timeLeft && (
-            <div className='text-sm text-gray-500'>
-              {course.progress}% complete - {course.timeLeft}
-            </div>
+          {course.status === 'In Progress' && (
+            <div className='text-sm text-gray-500'>{course.progressPercent}% complete</div>
           )}
 
-          {course.status === 'not-started' && (
-            <div className='text-sm text-gray-500'>Available after current course</div>
+          {course.status === 'Not Started' && (
+            <div className='text-sm text-gray-500'>Ready to start</div>
           )}
         </div>
 
         {/* Action Button */}
-        <Button
-          className='w-full bg-yellow-400 hover:bg-yellow-500 text-gray-800 font-medium'
-          variant={getButtonVariant(course.status)}
-          disabled={course.isLocked}
-        >
-          {course.buttonText}
-        </Button>
+        <Link href={`/courses/${course.id}`}>
+          <Button
+            className='w-full bg-yellow-400 hover:bg-yellow-500 text-gray-800 font-medium'
+            variant={getButtonVariant(course.status)}
+            disabled={course.isLocked}
+          >
+            {getButtonText(course.status)}
+          </Button>
+        </Link>
       </div>
     </div>
   );

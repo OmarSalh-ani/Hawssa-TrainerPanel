@@ -2,6 +2,7 @@
 import Section from '@/components/layout/header/section';
 import { Progress } from '@/components/ui/progress';
 import { TrainingCourse } from '@/lib/data/training';
+import { BookOpen, CheckCircle, Play } from 'lucide-react';
 import React from 'react';
 
 interface AdditionalTrainingCardsProps {
@@ -48,20 +49,42 @@ export default function AdditionalTrainingCards({ courses }: AdditionalTrainingC
     }
   };
 
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'completed':
+        return <CheckCircle className='w-4 h-4' />;
+      case 'in-progress':
+        return <Play className='w-4 h-4' />;
+      case 'not-started':
+        return <BookOpen className='w-4 h-4' />;
+      default:
+        return <BookOpen className='w-4 h-4' />;
+    }
+  };
+
   return (
     <Section>
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-3'>
         {courses.map(course => (
-          <div key={course.id} className='bg-white shadow-lg rounded-lg p-4  '>
+          <div key={course.id} className='bg-white shadow-lg rounded-lg p-4'>
             {/* Header */}
             <div className='flex items-center justify-between mb-4'>
-              <h3 className='text-lg font-semibold text-[#344054]'>{course.title}</h3>
+              <div className='flex items-center space-x-2'>
+                <div
+                  className='w-8 h-8 rounded-full flex items-center justify-center'
+                  style={{ backgroundColor: course.color + '20' }}
+                >
+                  {React.createElement(course.icon, { size: 16, style: { color: course.color } })}
+                </div>
+                <h3 className='text-lg font-semibold text-[#344054]'>{course.title}</h3>
+              </div>
               <span
-                className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                className={`px-3 py-1 rounded-full text-xs font-medium flex items-center space-x-1 ${getStatusColor(
                   course.status,
                 )}`}
               >
-                {getStatusText(course.status)}
+                {getStatusIcon(course.status)}
+                <span>{getStatusText(course.status)}</span>
               </span>
             </div>
 

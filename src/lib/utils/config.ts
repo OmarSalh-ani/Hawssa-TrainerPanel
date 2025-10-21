@@ -1,9 +1,16 @@
 import { getToken } from '@/lib/utils/cookie';
-import axios from 'axios';
+import { handleError } from '@/lib/utils/error-handler';
+import axios, { AxiosRequestConfig, Method } from 'axios';
 
 // import baseUrl
 export const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
+interface ApiResponse<T> {
+  success: boolean;
+  message?: string;
+  data: T;
+  errors: Record<string, string | string[]>;
+}
 // server-side axios instance factory (async)
 export const baseAPI = async () => {
   const token = await getToken();
@@ -11,11 +18,12 @@ export const baseAPI = async () => {
     baseURL,
     headers: {
       'Content-Type': 'application/json',
+      'Accept-Language': 'ar',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
   });
 };
-// use this baseAPI form only if you are visiting a form data or uploading a document
+// for form data
 export const baseAPIForm = async () => {
   const token = await getToken();
   return axios.create({
@@ -26,3 +34,31 @@ export const baseAPIForm = async () => {
     },
   });
 };
+
+export async function callAPI<T>(
+  method: Method,
+  url: string,
+  data?: unknown,
+  config?: AxiosRequestConfig,
+  isForm: boolean = false,
+): Promise<ApiResponse<T>> {
+  try {
+    const api = isForm ? await baseAPIForm() : await baseAPI();
+
+    const response = await api.request<ApiResponse<T>>({
+      method,
+      url,
+      data,
+      ...config,
+    });
+
+    return {
+      success: response?.data?.success ?? true,
+      data: response?.data?.data,
+      message: response?.data?.message || 'ok',
+      errors: response?.data?.errors || {},
+    };
+  } catch (error: unknown) {
+    return handleError(error) as unknown as ApiResponse<T>;
+  }
+}

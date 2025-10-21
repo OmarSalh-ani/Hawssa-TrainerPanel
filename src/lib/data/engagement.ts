@@ -1,18 +1,27 @@
-import { Eye, Zap } from 'lucide-react';
+import { Zap } from 'lucide-react';
 
-export interface ProfileViewsData {
+export interface SubscriptionData {
   id: number;
   title: string;
-  description: string;
-  icon: React.ElementType;
-  iconColor: string;
-  mainMetric: number;
-  changePercentage: number;
-  changeType: 'increase' | 'decrease';
-  breakdown: {
-    label: string;
-    value: number;
-  }[];
+  status: 'Active' | 'Not Active';
+  statusColor: string;
+  expirationDate: string;
+  daysRemaining: number;
+  message: string;
+  buttonText: string;
+  buttonColor: string;
+}
+
+export interface CertificateData {
+  id: number;
+  title: string;
+  status: 'Active' | 'Not Active';
+  statusColor: string;
+  expirationDate: string;
+  message: string;
+  downloadButtonText: string;
+  renewButtonText: string;
+  renewButtonColor: string;
 }
 
 export interface EnergyLevelData {
@@ -28,23 +37,34 @@ export interface EnergyLevelData {
   aboveTarget: number;
 }
 
-export const profileViewsData: ProfileViewsData = {
+export const subscriptionData: SubscriptionData = {
   id: 1,
-  title: 'Monthly Profile Views',
-  description: 'Your fitness expertise is gaining attention!',
-  icon: Eye,
-  iconColor: '#EF4444',
-  mainMetric: 23500,
-  changePercentage: 12,
-  changeType: 'increase',
-  breakdown: [
-    { label: 'Profile Visits', value: 8565 },
-    { label: 'Courses Preview', value: 3245 },
-  ],
+  title: 'Plan State',
+  status: 'Not Active',
+  statusColor: '#EF4444',
+  expirationDate: '25/08/2025',
+  daysRemaining: 23,
+  message:
+    'Your subscription expires in 23 days. Renew now to continue accessing premium features!',
+  buttonText: 'Renew Subscription',
+  buttonColor: '#FDE047',
+};
+
+export const certificateData: CertificateData = {
+  id: 2,
+  title: 'Certificate Status',
+  status: 'Not Active',
+  statusColor: '#EF4444',
+  expirationDate: '25/08/2025',
+  message:
+    'Your trainer certificate has expired. Renew now to continue being a certified trainer on the platform.',
+  downloadButtonText: 'Download',
+  renewButtonText: 'Renew',
+  renewButtonColor: '#FDE047',
 };
 
 export const energyLevelData: EnergyLevelData = {
-  id: 2,
+  id: 3,
   title: 'Energy Level',
   description: 'Keep your motivation burning bright!',
   icon: Zap,
