@@ -7,7 +7,7 @@ export const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 interface ApiResponse<T> {
   success: boolean;
-  message?: string;
+  message: string; // was optional, now always required to match usage
   data: T;
   errors: Record<string, string | string[]>;
 }
@@ -55,7 +55,7 @@ export async function callAPI<T>(
     return {
       success: response?.data?.success ?? true,
       data: response?.data?.data,
-      message: response?.data?.message || 'ok',
+      message: response?.data?.message || 'ok', // always string
       errors: response?.data?.errors || {},
     };
   } catch (error: unknown) {

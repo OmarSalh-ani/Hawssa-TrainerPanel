@@ -1,11 +1,19 @@
-import { Button } from '@/components/ui/button';
+'use client';
+import ProfileSkeleton from '@/components/features/panel/profile/profile-skeleton';
+import { useProfile } from '@/hooks/profile';
 import AvailabilityScheduleSection from './availability-schedule-section';
 import GymDetailsSection from './gym-details-section';
-import LocationDetailsSection from './location-details-section';
 import ProfileBanner from './profile-banner';
 import TrainerInformationSection from './trainer-information-section';
-
 export default function ProfileContent() {
+  const { data, isLoading } = useProfile('en');
+  console.log(data);
+  const profile = data?.data;
+  console.log(profile);
+
+  if (isLoading) {
+    return <ProfileSkeleton />;
+  }
   return (
     <div className='min-h-screen'>
       {/* Profile Banner */}
@@ -17,20 +25,13 @@ export default function ProfileContent() {
         <TrainerInformationSection />
 
         {/* Location Details */}
-        <LocationDetailsSection />
+        {/* <LocationDetailsSection/> */}
 
         {/* Gym Details */}
         <GymDetailsSection />
 
         {/* Availability & Schedule */}
         <AvailabilityScheduleSection />
-
-        {/* Save Changes Button */}
-        <div className='flex justify-end pt-6'>
-          <Button className='bg-yellow-400 text-black hover:bg-yellow-300 px-8 py-3 text-lg font-semibold'>
-            Save Changes
-          </Button>
-        </div>
       </div>
     </div>
   );

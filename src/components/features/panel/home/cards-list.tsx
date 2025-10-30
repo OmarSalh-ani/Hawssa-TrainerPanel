@@ -57,8 +57,7 @@ export default function CardsList({ homeData }: CardsListProps) {
             key={card.id}
             title={card.title}
             description={card.description}
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            icon={card.icon as any}
+
             color={card.color}
             number={card.number}
             text={card.text}

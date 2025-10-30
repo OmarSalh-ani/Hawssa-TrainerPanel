@@ -1,26 +1,28 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { getToken } from './lib/utils/cookie';
 
 const PUBLIC_ROUTES = ['/login', '/forgot-password', '/signup'];
 
 export async function middleware(request: NextRequest) {
-  const token = await getToken(); // pass request if needed
+  const token = request.cookies.get('token')?.value; // pass request if needed
 
   const { pathname } = request.nextUrl;
 
-  // Allow access to public routes and their subpaths
-  if (PUBLIC_ROUTES.some(route => pathname === route || pathname.startsWith(`${route}/`))) {
+  // لو فيه توكن:
+  if (token) {
+    // لو المستخدم داخل على صفحة عامة → نوديه على الـ dashboard
+    if (PUBLIC_ROUTES.includes(pathname)) {
+      return NextResponse.redirect(new URL('/', request.url));
+    }
+    // لو الصفحة محمية → يدخل عادي
+    return NextResponse.next();
+  }
+  if (PUBLIC_ROUTES.includes(pathname)) {
     return NextResponse.next();
   }
 
-  // Redirect if no token
-  if (!token) {
-    const loginUrl = new URL('/login', request.url);
-    return NextResponse.redirect(loginUrl);
-  }
-
-  return NextResponse.next();
+  // لو الصفحة محمية → يرجع للـ login
+  return NextResponse.redirect(new URL('/login', request.url));
 }
 
 export const config = {

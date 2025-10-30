@@ -1,17 +1,16 @@
 'use client';
-import React from 'react';
 
 export default function Card({
   title,
   description,
-  icon,
+
   color,
   number,
   text,
 }: {
   title: string;
   description: string;
-  icon: React.ElementType;
+  // accept a ready element
   color: string;
   number: number;
   text: string;
@@ -25,9 +24,6 @@ export default function Card({
       <div className=''>
         <div className='flex items-center justify-between gap-2'>
           <h2 className='text-lg font-semibold  text-gray-500'>{title}</h2>
-          <p className='rounded-full p-2 text-white' style={{ backgroundColor: color }}>
-            {React.createElement(icon)}
-          </p>
         </div>
         <div>
           <h3 className='text-4xl font-bold capitalize'>

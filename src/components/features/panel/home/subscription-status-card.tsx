@@ -10,7 +10,7 @@ interface SubscriptionStatusCardProps {
   data?: SubscriptionData;
 }
 
-export default function SubscriptionStatusCard({ data }: SubscriptionStatusCardProps) {
+export default function SubscriptionStatusCard({}: SubscriptionStatusCardProps) {
   const { data: subscriptionStatus, isLoading } = useSubscriptionStatus();
   const [showPlans, setShowPlans] = useState(false);
 
