@@ -8,10 +8,11 @@ interface ReleaseDetailsPageProps {
 
 export default async function ReleaseDetailsPage({ params }: ReleaseDetailsPageProps) {
   const { slug } = await params;
+  const releaseId = parseInt(slug, 10);
 
   return (
     <div className='min-h-screen bg-gray-100'>
-      <ReleaseDetailsContent slug={slug} />
+      <ReleaseDetailsContent releaseId={releaseId} />
     </div>
   );
 }

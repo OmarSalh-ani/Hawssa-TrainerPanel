@@ -1,59 +1,24 @@
+'use client';
+import { useReleases } from '@/hooks/releases';
 import AlbumCard from './album-card';
-
-const latestAlbums = [
-  {
-    id: 1,
-    title: 'Advanced HIIT Training',
-    description:
-      'Master high-intensity interval training techniques and protocols for maximum desired results.',
-    videoCount: '8 Video Class',
-    image: '/assets/program1.png',
-    href: '/hawssa-releases/advanced-hiit-training',
-  },
-  {
-    id: 2,
-    title: 'Strength & Power Building',
-    description: 'Build explosive strength and power with advanced resistance training techniques.',
-    videoCount: '6 Video Class',
-    image: '/assets/program2.png',
-    href: '/hawssa-releases/strength-power-building',
-  },
-  {
-    id: 3,
-    title: 'Flexibility & Mobility',
-    description: 'Improve your range of motion and prevent injuries with targeted mobility work.',
-    videoCount: '5 Video Class',
-    image: '/assets/program3.png',
-    href: '/hawssa-releases/flexibility-mobility',
-  },
-  {
-    id: 4,
-    title: 'Cardio Blast Workout',
-    description: 'High-energy cardio sessions to burn calories and improve cardiovascular health.',
-    videoCount: '7 Video Class',
-    image: '/assets/program4.png',
-    href: '/hawssa-releases/cardio-blast-workout',
-  },
-  {
-    id: 5,
-    title: 'Yoga Flow Sessions',
-    description: 'Relaxing yoga flows for flexibility, strength, and mental well-being.',
-    videoCount: '4 Video Class',
-    image: '/assets/program1.png',
-    href: '/hawssa-releases/yoga-flow-sessions',
-  },
-  {
-    id: 6,
-    title: 'Core Strength Mastery',
-    description:
-      'Target your core with specialized exercises for a stronger, more stable midsection.',
-    videoCount: '6 Video Class',
-    image: '/assets/program2.png',
-    href: '/hawssa-releases/core-strength-mastery',
-  },
-];
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function LatestReleasesSection() {
+  const { data, isLoading, error } = useReleases({ page: 1, pageSize: 8 }, 'en');
+  const releases = data?.data?.items || [];
+
+  if (error) {
+    return (
+      <div className='py-16 bg-gray-50'>
+        <div className='max-w-7xl mx-auto px-6'>
+          <div className='text-center text-red-600'>
+            <p>Failed to load releases. Please try again later.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className='py-16 bg-gray-50'>
       <div className='max-w-7xl mx-auto px-6'>
@@ -64,18 +29,38 @@ export default function LatestReleasesSection() {
         </div>
 
         {/* Album Grid */}
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-          {latestAlbums.map(album => (
-            <AlbumCard
-              key={album.id}
-              title={album.title}
-              description={album.description}
-              videoCount={album.videoCount}
-              image={album.image}
-              href={album.href}
-            />
-          ))}
-        </div>
+        {isLoading ? (
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className='bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden'>
+                <Skeleton className='aspect-video w-full' />
+                <div className='p-4 space-y-3'>
+                  <Skeleton className='h-5 w-3/4' />
+                  <Skeleton className='h-4 w-full' />
+                  <Skeleton className='h-4 w-2/3' />
+                  <Skeleton className='h-10 w-full' />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : releases.length > 0 ? (
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+            {releases.map(release => (
+              <AlbumCard
+                key={release.id}
+                title={release.title}
+                description={release.description}
+                videoCount={`${release.videosCount} Video${release.videosCount !== 1 ? 's' : ''}`}
+                image={release.imageUrl}
+                href={`/hawssa-releases/${release.id}`}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className='text-center text-gray-600 py-12'>
+            <p>No releases available at the moment.</p>
+          </div>
+        )}
       </div>
     </div>
   );

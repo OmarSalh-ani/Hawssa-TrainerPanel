@@ -26,12 +26,18 @@ export default function AlbumCard({
     >
       {/* Image Container */}
       <div className='relative aspect-video overflow-hidden'>
-        <Image
-          src={image}
-          alt={title}
-          fill
-          className='object-cover group-hover:scale-105 transition-transform duration-300'
-        />
+        {image ? (
+          <Image
+            src={image}
+            alt={title}
+            fill
+            className='object-cover group-hover:scale-105 transition-transform duration-300'
+          />
+        ) : (
+          <div className='w-full h-full bg-gradient-to-r from-[#D7582B] to-[#C9633F] flex items-center justify-center'>
+            <span className='text-white text-2xl font-bold'>{title.charAt(0)}</span>
+          </div>
+        )}
         {/* Video Count Badge */}
         <div className='absolute top-3 right-3 bg-yellow-400 text-black px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1'>
           <Video className='w-3 h-3' />

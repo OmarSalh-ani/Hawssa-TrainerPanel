@@ -1,5 +1,4 @@
 import Team from '@/components/shared/team';
-import FeaturedSection from './featured-section';
 import HeroBanner from './hero-banner';
 import LatestReleasesSection from './latest-releases-section';
 import StatisticsSection from './statistics-section';
@@ -14,7 +13,7 @@ export default function HawssaReleasesContent() {
       <StatisticsSection />
 
       {/* Featured Section */}
-      <FeaturedSection />
+      {/* <FeaturedSection /> */}
 
       {/* Latest Releases Section */}
       <LatestReleasesSection />

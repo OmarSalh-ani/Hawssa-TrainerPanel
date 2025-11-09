@@ -9,10 +9,42 @@ import ProfileAvailabilityForm from './profile-availability-form';
 import ProfileUpdateForm from './profile-update-form';
 
 export default function ProfileBanner() {
-  const { data, refetch } = useProfile('en');
+  const { data, refetch, error, isLoading } = useProfile('en');
   const profile = data?.data;
   const [openProfile, setOpenProfile] = useState(false);
   const [openAvailability, setOpenAvailability] = useState(false);
+
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  if (error) {
+    return (
+      <div className='relative bg-gradient-to-r from-[#D7582B] to-[#C9633F] py-8 px-24'>
+        <div className='text-white text-center'>
+          <h2 className='text-xl font-semibold mb-2'>Error Loading Profile</h2>
+          <p className='text-sm opacity-90'>
+            {error instanceof Error ? error.message : 'Failed to load profile data. Please try again later.'}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isLoading || !profile) {
+    return (
+      <div className='relative bg-gradient-to-r from-[#D7582B] to-[#C9633F] py-8 px-24'>
+        <div className='text-white text-center'>
+          <p className='text-lg opacity-90'>Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className='relative bg-gradient-to-r from-[#D7582B] to-[#C9633F] py-8 px-24'>
@@ -28,20 +60,26 @@ export default function ProfileBanner() {
         <div className='relative'>
           <div className='w-24 h-24 bg-yellow-400 rounded-full flex items-center justify-center'>
             <div className='w-16 h-16 bg-white rounded-full flex items-center justify-center'>
-              <Image
-                src={profile?.imageUrl ?? ''}
-                alt={profile?.fullName ?? ''}
-                width={64}
-                height={64}
-                className='object-cover'
-              />
+              {profile.imageUrl ? (
+                <Image
+                  src={profile.imageUrl}
+                  alt={profile.fullName || 'Profile'}
+                  width={64}
+                  height={64}
+                  className='object-cover rounded-full'
+                />
+              ) : (
+                <span className='text-2xl font-bold text-gray-800'>
+                  {getInitials(profile.fullName || 'U')}
+                </span>
+              )}
             </div>
           </div>
         </div>
         {/* Profile Info */}
         <div className='text-white '>
-          <h1 className='text-3xl font-bold mb-2'>{profile?.fullName}</h1>
-          <p className='text-lg opacity-90'>{profile?.email}</p>
+          <h1 className='text-3xl font-bold mb-2'>{profile.fullName}</h1>
+          <p className='text-lg opacity-90'>{profile.email}</p>
         </div>
       </div>
       {/* Action Buttons */}
@@ -85,7 +123,7 @@ export default function ProfileBanner() {
           <DialogHeader>
             <DialogTitle>Update Availability</DialogTitle>
           </DialogHeader>
-          {profile && profile.gym.availabilities && (
+          {profile && profile.gym?.availabilities && (
             <ProfileAvailabilityForm
               availabilities={profile.gym.availabilities}
               onUpdated={() => {

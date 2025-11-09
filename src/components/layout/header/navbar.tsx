@@ -1,16 +1,23 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { navbarData } from '@/lib/data/navbar';
+import { removeToken } from '@/lib/utils/cookie';
 import { Bell, Menu, User, X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
+  const router = useRouter();
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const handleLogout = () => {
+    removeToken();
+    router.push('/login');
   };
 
   return (
@@ -40,8 +47,8 @@ export default function Navbar() {
           <Button variant='ghost' size='sm'>
             <Bell />
           </Button>
-          <Button variant='ghost' size='sm'>
-            <User />
+          <Button variant='default' size='lg' onClick={handleLogout} className='cursor-pointer'>
+            Logout
           </Button>
         </div>
 

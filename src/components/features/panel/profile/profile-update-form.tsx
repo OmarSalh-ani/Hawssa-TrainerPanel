@@ -16,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useCities, useGovernments } from '@/hooks/locations';
 import { useUpdateProfile } from '@/hooks/profile';
 import { Profile } from '@/lib/types/profile';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -24,28 +25,30 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-const GOVERNMENTS = [
-  { id: 1, name: 'Cairo' },
-  { id: 2, name: 'Alexandria' },
-];
-const CITIES = [
-  { id: 1, name: 'Nasr City' },
-  { id: 2, name: '6th October' },
-];
-
 const ProfileUpdateSchema = z.object({
   FullName: z.string('Full Name is required').min(2).max(64),
   BirthDate: z.string().min(4),
   MobileNumber: z.string('Mobile Number is required').min(6),
   Email: z.string('Email is required').email(),
   IsMale: z.boolean('Gender is required'),
-  ProfileImage: z.instanceof(File, { message: 'Profile Image is required' }),
+  ProfileImage: z
+    .any()
+    .refine(
+      val => {
+        if (val === undefined || val === null) return true;
+        // Check if it's a FileList (browser only)
+        if (typeof FileList !== 'undefined' && val instanceof FileList) return true;
+        return false;
+      },
+      { message: 'Invalid file input' },
+    )
+    .optional(),
   GymName: z.string('Gym Name is required').min(2),
   GymMobileNumber: z.string('Gym Mobile Number is required').min(6),
   GoogleMapsUrl: z.string('Google Maps URL is required').url().optional().or(z.literal('')),
   GymAddress: z.string('Gym Address is required').min(2),
-  GovernmentId: z.number('Government is required'),
-  CityId: z.number('City is required'),
+  GovernmentId: z.number('Government is required').min(1, 'Please select a government'),
+  CityId: z.number('City is required').min(1, 'Please select a city'),
 });
 
 type ProfileUpdateSchemaType = z.infer<typeof ProfileUpdateSchema>;
@@ -57,24 +60,42 @@ interface ProfileUpdateFormProps {
 
 export default function ProfileUpdateForm({ profile, onUpdated }: ProfileUpdateFormProps) {
   const [filePreview, setFilePreview] = useState<string | null>(profile.imageUrl || null);
+  const lang = 'en';
+
+  // Fetch governments
+  const { data: governmentsData, isLoading: isLoadingGovernments } = useGovernments(lang);
+  const governments = governmentsData?.data?.items || [];
+
   const form = useForm<ProfileUpdateSchemaType>({
     resolver: zodResolver(ProfileUpdateSchema),
     defaultValues: {
-      FullName: profile.fullName,
-      BirthDate: profile.birthDate.split('T')[0],
-      MobileNumber: profile.mobileNumber,
-      Email: profile.email,
-      IsMale: profile.isMale,
+      FullName: profile.fullName || '',
+      BirthDate: profile.birthDate ? profile.birthDate.split('T')[0] : '',
+      MobileNumber: profile.mobileNumber || '',
+      Email: profile.email || '',
+      IsMale: profile.isMale ?? false,
       ProfileImage: undefined,
-      GymName: profile.gym.gymName,
-      GymMobileNumber: profile.gym.mobileNumber,
-      GoogleMapsUrl: profile.gym.googleMapsUrl || '',
-      GymAddress: profile.gym.address,
-      GovernmentId: Number(profile.gym.governmentId) || GOVERNMENTS[0].id,
-      CityId: Number(profile.gym.cityId) || CITIES[0].id,
+      GymName: profile.gym?.gymName || '',
+      GymMobileNumber: profile.gym?.mobileNumber || '',
+      GoogleMapsUrl: profile.gym?.googleMapsUrl || '',
+      GymAddress: profile.gym?.address || '',
+      GovernmentId: profile.gym?.governmentId ? Number(profile.gym.governmentId) : 0,
+      CityId: profile.gym?.cityId ? Number(profile.gym.cityId) : 0,
     },
   });
-  const updateProfile = useUpdateProfile('en');
+
+  // Watch government field to fetch cities when it changes
+  const watchedGovernmentId = form.watch('GovernmentId');
+
+  // Fetch cities for the selected government
+  const { data: citiesData, isLoading: isLoadingCities } = useCities(
+    watchedGovernmentId || 0,
+    lang,
+    !!watchedGovernmentId && watchedGovernmentId > 0,
+  );
+  const cities = citiesData?.data?.items || [];
+
+  const updateProfile = useUpdateProfile(lang);
 
   function onSubmit(values: ProfileUpdateSchemaType) {
     updateProfile.mutate(
@@ -273,16 +294,20 @@ export default function ProfileUpdateForm({ profile, onUpdated }: ProfileUpdateF
               <FormItem>
                 <FormLabel>Government *</FormLabel>
                 <Select
-                  value={String(field.value)}
-                  onValueChange={val => field.onChange(Number(val))}
+                  value={field.value > 0 ? String(field.value) : ''}
+                  onValueChange={val => {
+                    field.onChange(Number(val));
+                    form.setValue('CityId', 0); // Reset city when government changes
+                  }}
+                  disabled={isLoadingGovernments}
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder='Select' />
+                      <SelectValue placeholder={isLoadingGovernments ? 'Loading...' : 'Select'} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {GOVERNMENTS.map(g => (
+                    {governments?.map(g => (
                       <SelectItem key={g.id} value={String(g.id)}>
                         {g.name}
                       </SelectItem>
@@ -300,16 +325,25 @@ export default function ProfileUpdateForm({ profile, onUpdated }: ProfileUpdateF
               <FormItem>
                 <FormLabel>City *</FormLabel>
                 <Select
-                  value={String(field.value)}
+                  value={field.value > 0 ? String(field.value) : ''}
                   onValueChange={val => field.onChange(Number(val))}
+                  disabled={isLoadingCities || !watchedGovernmentId || watchedGovernmentId === 0}
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder='Select' />
+                      <SelectValue
+                        placeholder={
+                          !watchedGovernmentId || watchedGovernmentId === 0
+                            ? 'Select government first'
+                            : isLoadingCities
+                            ? 'Loading...'
+                            : 'Select'
+                        }
+                      />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {CITIES.map(c => (
+                    {cities.map(c => (
                       <SelectItem key={c.id} value={String(c.id)}>
                         {c.name}
                       </SelectItem>
