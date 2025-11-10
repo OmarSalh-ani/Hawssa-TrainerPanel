@@ -77,6 +77,7 @@ export const subscriptionData: SubscriptionData = {
       buttonText: 'Subscribe To 3-Month',
       buttonColor: 'bg-blue-500 hover:bg-blue-600',
       iconColor: 'text-blue-500',
+      isPopular: false,
     },
     {
       id: '1-year',

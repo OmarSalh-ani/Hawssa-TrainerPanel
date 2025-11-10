@@ -2,7 +2,8 @@
 import { Button } from '@/components/ui/button';
 import { navbarData } from '@/lib/data/navbar';
 import { removeToken } from '@/lib/utils/cookie';
-import { Bell, Menu, User, X } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
+import { Bell, Menu, X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -11,12 +12,18 @@ import { useState } from 'react';
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
+  const queryClient = useQueryClient();
+
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const handleLogout = () => {
-    removeToken();
+  const handleLogout = async () => {
+    // Clear all React Query cache to prevent showing previous user's data
+    queryClient.clear();
+    // Remove authentication token
+    await removeToken();
+    // Redirect to login page
     router.push('/login');
   };
 
@@ -57,9 +64,7 @@ export default function Navbar() {
           <Button variant='ghost' size='sm'>
             <Bell />
           </Button>
-          <Button variant='ghost' size='sm'>
-            <User />
-          </Button>
+
           <Button variant='ghost' size='sm' onClick={toggleMobileMenu} className='ml-2'>
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </Button>
@@ -80,6 +85,9 @@ export default function Navbar() {
                 {item.name}
               </Link>
             ))}
+            <Button variant='default' size='lg' onClick={handleLogout} className='cursor-pointer'>
+              Logout
+            </Button>
           </div>
         </div>
       )}

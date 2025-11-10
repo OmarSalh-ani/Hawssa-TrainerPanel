@@ -2,9 +2,11 @@
 
 import { useSubscriptionStatus } from '@/hooks/subscription';
 import { SubscriptionData } from '@/lib/data/engagement';
-import { AlertCircle, CheckCircle, CreditCard, XCircle } from 'lucide-react';
+import { AlertCircle, CheckCircle, CreditCard, Link, XCircle } from 'lucide-react';
 import { useState } from 'react';
 import { SubscriptionPlans } from '../subscription/subscription-plans';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 interface SubscriptionStatusCardProps {
   data?: SubscriptionData;
@@ -13,6 +15,11 @@ interface SubscriptionStatusCardProps {
 export default function SubscriptionStatusCard({}: SubscriptionStatusCardProps) {
   const { data: subscriptionStatus, isLoading } = useSubscriptionStatus();
   const [showPlans, setShowPlans] = useState(false);
+  const router = useRouter();
+  const handleManageSubscription = () => {
+    // setShowPlans(true);
+    router.push('/subscription');
+  };
 
   // Use API data if available, otherwise fall back to props
   // const subscriptionData = subscriptionStatus?.data ||
@@ -131,13 +138,15 @@ export default function SubscriptionStatusCard({}: SubscriptionStatusCardProps) 
       </div>
 
       {/* Action Button */}
-      <button
-        onClick={() => setShowPlans(true)}
+      <Button
+        onClick={handleManageSubscription }
         className='w-full py-3 px-4 rounded-lg font-medium text-gray-900 transition-colors hover:opacity-90'
         style={{ backgroundColor: isActive ? '#10B981' : '#FDE047' }}
       >
+
         {isActive ? 'Manage Subscription' : 'Choose Plan'}
-      </button>
+
+      </Button>
     </div>
   );
 }

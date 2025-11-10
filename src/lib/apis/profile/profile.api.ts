@@ -40,7 +40,7 @@ export const updateProfile = async (
 
 /**
  * Update only the availability portion of the profile
- * @param data Availability update fields (as FormData keys)
+ * @param data Availability update fields (as JSON body)
  * @param lang Language code (default: 'en')
  */
 export const updateAvailability = async (
@@ -48,11 +48,6 @@ export const updateAvailability = async (
   lang: string = 'en',
 ): Promise<ApiResponse<Profile>> => {
   const endpoint = `/api/${lang}/profile/availability`;
-  const formData = new FormData();
-  Object.entries(data).forEach(([key, value]) => {
-    if (value !== undefined && value !== null) {
-      formData.append(key, `${value}`); // always as string
-    }
-  });
-  return await callAPI<Profile>('POST', endpoint, formData, {}, true);
+  // Send as JSON body instead of FormData
+  return await callAPI<Profile>('POST', endpoint, data);
 };

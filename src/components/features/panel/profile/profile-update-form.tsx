@@ -9,6 +9,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { PhoneInput } from '@/components/ui/phone-input';
 import {
   Select,
   SelectContent,
@@ -23,7 +24,42 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { parsePhoneNumber, type Country } from 'react-phone-number-input';
 import { z } from 'zod';
+
+// Helper function to convert phone number to E.164 format
+const convertToE164 = (
+  phoneNumber: string | null | undefined,
+  defaultCountry: string = 'EG',
+): string | undefined => {
+  if (!phoneNumber) return undefined;
+
+  // If already in E.164 format, return as is
+  if (phoneNumber.startsWith('+')) {
+    return phoneNumber;
+  }
+
+  // Remove leading zeros and spaces
+  const cleaned = phoneNumber.replace(/^0+/, '').replace(/\s/g, '');
+
+  // Try to parse and format the number
+  try {
+    const parsed = parsePhoneNumber(cleaned, defaultCountry as Country);
+    if (parsed && parsed.isValid()) {
+      return parsed.number;
+    }
+  } catch {
+    // If parsing fails, manually construct E.164 format for Egypt
+    if (defaultCountry === 'EG') {
+      // Remove leading 0 if present
+      const nationalNumber = cleaned.startsWith('0') ? cleaned.slice(1) : cleaned;
+      // Add Egypt country code (+20)
+      return `+20${nationalNumber}`;
+    }
+  }
+
+  return undefined;
+};
 
 const ProfileUpdateSchema = z.object({
   FullName: z.string('Full Name is required').min(2).max(64),
@@ -71,12 +107,12 @@ export default function ProfileUpdateForm({ profile, onUpdated }: ProfileUpdateF
     defaultValues: {
       FullName: profile.fullName || '',
       BirthDate: profile.birthDate ? profile.birthDate.split('T')[0] : '',
-      MobileNumber: profile.mobileNumber || '',
+      MobileNumber: convertToE164(profile.mobileNumber, 'EG') || '',
       Email: profile.email || '',
       IsMale: profile.isMale ?? false,
       ProfileImage: undefined,
       GymName: profile.gym?.gymName || '',
-      GymMobileNumber: profile.gym?.mobileNumber || '',
+      GymMobileNumber: convertToE164(profile.gym?.mobileNumber, 'EG') || '',
       GoogleMapsUrl: profile.gym?.googleMapsUrl || '',
       GymAddress: profile.gym?.address || '',
       GovernmentId: profile.gym?.governmentId ? Number(profile.gym.governmentId) : 0,
@@ -101,6 +137,8 @@ export default function ProfileUpdateForm({ profile, onUpdated }: ProfileUpdateF
     updateProfile.mutate(
       {
         ...values,
+        // Keep phone numbers in E.164 format (with +2 prefix) like signup
+        // MobileNumber and GymMobileNumber are already in E.164 format from PhoneInput
         ProfileImage:
           typeof values.ProfileImage === 'object' &&
           values.ProfileImage instanceof FileList &&
@@ -150,9 +188,15 @@ export default function ProfileUpdateForm({ profile, onUpdated }: ProfileUpdateF
             name='MobileNumber'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Mobile Number *</FormLabel>
+                <FormLabel className='text-sm font-medium text-gray-700'>Phone Number *</FormLabel>
                 <FormControl>
-                  <Input {...field} autoComplete='tel' />
+                  <PhoneInput
+                    placeholder='Enter your phone number'
+                    className='h-12 border-gray-300 w-full'
+                    value={field.value}
+                    onChange={field.onChange}
+                    defaultCountry='EG'
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -251,7 +295,13 @@ export default function ProfileUpdateForm({ profile, onUpdated }: ProfileUpdateF
               <FormItem>
                 <FormLabel>Gym Mobile Number *</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <PhoneInput
+                    placeholder='Enter gym phone number'
+                    className='h-12 border-gray-300 w-full'
+                    value={field.value}
+                    onChange={field.onChange}
+                    defaultCountry='EG'
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

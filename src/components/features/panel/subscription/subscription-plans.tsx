@@ -75,7 +75,7 @@ export function SubscriptionPlans() {
         {subscriptions.map((plan, index) => {
           const Icon = getPlanIcon(index);
           const color = getPlanColor(index);
-          const isPopular = index === 1; // Mark second plan as popular
+          const isPopular = index === 2; // Mark second plan as popular
 
           return (
             <div
