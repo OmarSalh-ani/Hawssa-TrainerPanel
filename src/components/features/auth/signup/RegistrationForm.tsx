@@ -90,10 +90,14 @@ export default function RegistrationForm() {
       if (response.message) {
         setRegistrationEmail(data.email);
         step2Form.setValue('email', data.email);
+
+        // Auto-fill OTP if provided in response
+        if (response.data?.otp) {
+          step2Form.setValue('otp', response.data.otp);
+        }
+
         setCurrentStep(2);
-        toast.success(
-          'Registration data submitted successfully! Please check your email for the OTP.',
-        );
+        toast.success(response.message);
         console.log(response);
       } else {
         toast.error(response.message || 'Registration failed. Please try again.');
@@ -112,7 +116,7 @@ export default function RegistrationForm() {
       const response = await verifyRegistrationOTP(data);
 
       if (response.message) {
-        toast.success('Registration completed successfully! You can now log in.');
+        toast.success(response.message);
         // Redirect to login page or dashboard
         window.location.href = '/login';
       } else {

@@ -123,7 +123,7 @@ export default function ProfileBanner() {
           <DialogHeader>
             <DialogTitle>Update Availability</DialogTitle>
           </DialogHeader>
-          {profile && profile.gym?.availabilities && (
+          {profile && profile.gym && profile.gym.availabilities ? (
             <ProfileAvailabilityForm
               availabilities={profile.gym.availabilities}
               onUpdated={() => {
@@ -131,6 +131,10 @@ export default function ProfileBanner() {
                 refetch();
               }}
             />
+          ) : (
+            <div className='py-8 text-center text-gray-500'>
+              <p>No gym information available. Please add gym details first.</p>
+            </div>
           )}
         </DialogContent>
       </Dialog>

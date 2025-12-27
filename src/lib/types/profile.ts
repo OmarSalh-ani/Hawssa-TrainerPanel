@@ -8,7 +8,16 @@ export interface Profile {
   email: string;
   gender: string;
   isMale: boolean;
-  gym: ProfileGym;
+  social: ProfileSocial;
+  gym: ProfileGym | null;
+}
+
+export interface ProfileSocial {
+  facebook: string | null;
+  instagram: string | null;
+  tiktok: string | null;
+  snapchat: string | null;
+  twitter: string | null;
 }
 
 export interface ProfileGym {

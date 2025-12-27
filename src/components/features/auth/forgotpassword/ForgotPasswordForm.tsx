@@ -87,14 +87,20 @@ export default function ForgotPasswordForm() {
     try {
       const response = await requestPasswordReset(data);
 
-        if (response.message) {
-        setResetEmail(data.email);
-        step2Form.setValue('email', data.email);
-        step3Form.setValue('email', data.email);
-        setCurrentStep(2);
-        setCountdown(60); // 60 seconds countdown
-        toast.success('Password reset code sent to your email!');
-      } else {
+      if (response.message) {
+          setResetEmail(data.email);
+          step2Form.setValue('email', data.email);
+          step3Form.setValue('email', data.email);
+
+          // Auto-fill OTP if provided in response
+          if (response.data?.otp) {
+            step2Form.setValue('otp', response.data.otp);
+          }
+
+          setCurrentStep(2);
+          setCountdown(60); // 60 seconds countdown
+          toast.success(response.message);
+        } else {
         toast.error(response.message || 'Failed to send reset code. Please try again.');
       }
     } catch (error) {
@@ -112,7 +118,7 @@ export default function ForgotPasswordForm() {
 
       if (response.message) {
         setCurrentStep(3);
-        toast.success('OTP verified successfully! Please set your new password.');
+        toast.success(response.message);
       } else {
         toast.error(response.message || 'Invalid OTP. Please try again.');
       }
@@ -130,9 +136,7 @@ export default function ForgotPasswordForm() {
       const response = await completePasswordReset(data);
 
       if (response.message) {
-        toast.success(
-          'Password reset completed successfully! You can now log in with your new password.',
-        );
+        toast.success(response.message);
         // Redirect to login page
         window.location.href = '/login';
       } else {
@@ -163,8 +167,12 @@ export default function ForgotPasswordForm() {
       const response = await requestPasswordReset({ email: resetEmail });
 
       if (response.message) {
+        // Auto-fill OTP if provided in response
+        if (response.data?.otp) {
+          step2Form.setValue('otp', response.data.otp);
+        }
         setCountdown(60);
-        toast.success('Reset code sent again!');
+        toast.success(response.message);
       } else {
         toast.error('Failed to resend code. Please try again.');
       }

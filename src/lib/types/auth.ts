@@ -15,6 +15,7 @@ export interface ForgotPasswordStep1Request {
 
 export interface ForgotPasswordStep1Response {
   message: string;
+  otp?: string;
 }
 
 export interface ForgotPasswordStep2Request {

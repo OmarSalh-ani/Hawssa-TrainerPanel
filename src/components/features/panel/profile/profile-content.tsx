@@ -4,6 +4,7 @@ import { useProfile } from '@/hooks/profile';
 import AvailabilityScheduleSection from './availability-schedule-section';
 import GymDetailsSection from './gym-details-section';
 import ProfileBanner from './profile-banner';
+import SocialMediaSection from './social-media-section';
 import TrainerInformationSection from './trainer-information-section';
 export default function ProfileContent() {
   const { data, isLoading, error } = useProfile('en');
@@ -54,6 +55,9 @@ export default function ProfileContent() {
       <div className='max-w-7xl mx-auto px-6 py-8 space-y-8'>
         {/* Trainer Information */}
         <TrainerInformationSection />
+
+        {/* Social Media */}
+        <SocialMediaSection />
 
         {/* Location Details */}
         {/* <LocationDetailsSection/> */}

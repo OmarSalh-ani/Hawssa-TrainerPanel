@@ -45,7 +45,7 @@ export default function LoginForm() {
       if (response.success && response.data?.token) {
         setToken(response.data.token);
         console.log(response.data.token);
-        toast.success('Login successful! Welcome back.');
+        toast.success(response.message);
         router.push('/');
       } else {
         toast.error(response.message || 'Login failed. Please check your credentials.');

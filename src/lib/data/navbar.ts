@@ -24,4 +24,9 @@ export const navbarData = [
     name: 'Profile',
     href: '/profile',
   },
+  {
+    id: 6,
+    name: 'Blogs',
+    href: '/blogs',
+  },
 ];
