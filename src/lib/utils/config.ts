@@ -2,8 +2,11 @@ import { getToken } from '@/lib/utils/cookie';
 import { handleError } from '@/lib/utils/error-handler';
 import axios, { AxiosRequestConfig, Method } from 'axios';
 
-// import baseUrl
-export const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
+// import baseUrl with safe fallback for production
+const DEFAULT_API_BASE = 'https://hawssa-trainer-api.alsalhani.com';
+export const baseURL =
+  (process.env.NEXT_PUBLIC_API_BASE_URL && process.env.NEXT_PUBLIC_API_BASE_URL.trim()) ||
+  DEFAULT_API_BASE;
 
 interface ApiResponse<T> {
   success: boolean;
