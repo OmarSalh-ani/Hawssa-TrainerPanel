@@ -2,7 +2,7 @@
 
 import { useSubscriptionStatus } from '@/hooks/subscription';
 import { SubscriptionData } from '@/lib/data/engagement';
-import { AlertCircle, CheckCircle, CreditCard, Link, XCircle } from 'lucide-react';
+import { AlertCircle, CheckCircle, CreditCard, XCircle } from 'lucide-react';
 import { useState } from 'react';
 import { SubscriptionPlans } from '../subscription/subscription-plans';
 import { Button } from '@/components/ui/button';

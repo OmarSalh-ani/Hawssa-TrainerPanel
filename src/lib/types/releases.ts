@@ -15,6 +15,9 @@ export interface ReleaseVideo {
   imageUrl: string;
   lengthInSeconds: number;
   videoUrl: string;
+  vimeoId?: string | number;
+  VimeoId?: string | number;
+  ViemoId?: string | number;
 }
 
 export interface Pagination {
