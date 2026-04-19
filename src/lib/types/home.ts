@@ -1,57 +1,45 @@
-// Home API Types
-export interface HomeData {
-  trainerImage: string | null;
-  trainerFullName: string;
-  subscription: Subscription | null;
-  coursesProgress: CoursesProgress;
-  profileViews: number;
-  lastCourseProgress: LastCourseProgress;
-  lastCourses: LastCourse[];
+// Home dashboard — shapes match GET /api/{lang}/home
+
+export interface HomeSubscriptionInfo {
+  subscriptionName: string;
+  daysToEnd: number;
+  /** ISO date from API */
+  endDate: string;
 }
 
-export interface Subscription {
-  id: number;
-  title: string;
-  status: 'Active' | 'Not Active';
-  statusColor: string;
-  expirationDate: string;
-  daysRemaining: number;
-  message: string;
-  buttonText: string;
-  buttonColor: string;
-}
-
-export interface CoursesProgress {
+export interface HomeCoursesProgress {
   coursesCount: number;
   overallProgressPercent: number;
 }
 
-export interface LastCourseProgress {
+export interface HomeLastCourseProgress {
   courseName: string;
   completePercent: number;
   lastAccessTime: string;
   hoursRemaining: number;
-  status: 'Not Started' | 'In Progress' | 'Completed';
+  status: string;
 }
 
-export interface LastCourse {
+export interface HomeLastCourse {
   id: number;
   title: string;
   description: string;
-  image: string;
+  image: string | null;
   uploadDate: string;
 }
 
-// API Response Types
 export interface GetHomeResponse {
   trainerImage: string | null;
   trainerFullName: string;
-  subscription: Subscription | null;
-  coursesProgress: CoursesProgress;
+  subscription: HomeSubscriptionInfo | null;
+  coursesProgress: HomeCoursesProgress;
   profileViews: number;
-  lastCourseProgress: LastCourseProgress;
-  lastCourses: LastCourse[];
+  lastCourseProgress: HomeLastCourseProgress | null;
+  lastCourses: HomeLastCourse[];
 }
+
+/** Alias for dashboard payload */
+export type HomeData = GetHomeResponse;
 
 // API Error Response Type
 export interface HomeApiErrorResponse {

@@ -29,71 +29,81 @@ export function SubscriptionPage() {
   if (active) {
     return (
       <div className='min-h-screen bg-gray-50 py-8'>
-        <div className='max-w-2xl mx-auto px-4 sm:px-6 lg:px-8'>
-          <div className='bg-white rounded-xl shadow-lg border border-gray-200 p-8'>
-            <div className='flex items-start gap-3 mb-8'>
-              <CheckCircle2 className='w-8 h-8 text-green-600 shrink-0 mt-0.5' aria-hidden />
-              <div>
-                <h1 className='text-2xl font-bold text-gray-900'>Your subscription</h1>
-                <p className='text-gray-600 text-sm mt-1'>
-                  You already have an active plan. You do not need to subscribe again until it expires.
-                </p>
-              </div>
-            </div>
-
-            {sub ? (
-              <dl className='space-y-5'>
+        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12'>
+          <div className='max-w-2xl mx-auto w-full'>
+            <div className='bg-white rounded-xl shadow-lg border border-gray-200 p-8'>
+              <div className='flex items-start gap-3 mb-8'>
+                <CheckCircle2 className='w-8 h-8 text-green-600 shrink-0 mt-0.5' aria-hidden />
                 <div>
-                  <dt className='text-sm font-medium text-gray-500'>Plan</dt>
-                  <dd className='text-lg font-semibold text-gray-900 mt-0.5'>
-                    {sub.subscriptionName ?? '—'}
-                  </dd>
+                  <h1 className='text-2xl font-bold text-gray-900'>Your subscription</h1>
+                  <p className='text-gray-600 text-sm mt-1'>
+                    {hasFullLibrary
+                      ? 'You have an active plan with full library access.'
+                      : 'Your membership is active. You can add full HAWSSA library access below without changing your main plan.'}
+                  </p>
                 </div>
-                <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-                  <div className='flex gap-3 rounded-lg bg-gray-50 border border-gray-100 p-4'>
-                    <Calendar className='w-5 h-5 text-gray-500 shrink-0 mt-0.5' aria-hidden />
-                    <div>
-                      <dt className='text-xs font-medium text-gray-500 uppercase tracking-wide'>Start</dt>
-                      <dd className='text-sm font-semibold text-gray-900 mt-0.5'>
-                        {formatDate(sub.startDate)}
-                      </dd>
-                    </div>
-                  </div>
-                  <div className='flex gap-3 rounded-lg bg-gray-50 border border-gray-100 p-4'>
-                    <Calendar className='w-5 h-5 text-gray-500 shrink-0 mt-0.5' aria-hidden />
-                    <div>
-                      <dt className='text-xs font-medium text-gray-500 uppercase tracking-wide'>End</dt>
-                      <dd className='text-sm font-semibold text-gray-900 mt-0.5'>
-                        {formatDate(sub.endDate)}
-                      </dd>
-                    </div>
-                  </div>
-                </div>
-                {typeof sub.daysRemaining === 'number' && (
+              </div>
+
+              {sub ? (
+                <dl className='space-y-5'>
                   <div>
-                    <dt className='text-sm font-medium text-gray-500'>Days remaining</dt>
-                    <dd className='text-lg font-semibold text-gray-900 mt-0.5'>{sub.daysRemaining}</dd>
-                  </div>
-                )}
-                {typeof sub.paidAmount === 'number' && (
-                  <div>
-                    <dt className='text-sm font-medium text-gray-500'>Paid amount</dt>
+                    <dt className='text-sm font-medium text-gray-500'>Plan</dt>
                     <dd className='text-lg font-semibold text-gray-900 mt-0.5'>
-                      ${sub.paidAmount.toFixed(2)}
+                      {sub.subscriptionName ?? '—'}
                     </dd>
                   </div>
-                )}
-              </dl>
-            ) : (
-              <p className='text-gray-700'>Your subscription is active.</p>
-            )}
+                  <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+                    <div className='flex gap-3 rounded-lg bg-gray-50 border border-gray-100 p-4'>
+                      <Calendar className='w-5 h-5 text-gray-500 shrink-0 mt-0.5' aria-hidden />
+                      <div>
+                        <dt className='text-xs font-medium text-gray-500 uppercase tracking-wide'>Start</dt>
+                        <dd className='text-sm font-semibold text-gray-900 mt-0.5'>
+                          {formatDate(sub.startDate)}
+                        </dd>
+                      </div>
+                    </div>
+                    <div className='flex gap-3 rounded-lg bg-gray-50 border border-gray-100 p-4'>
+                      <Calendar className='w-5 h-5 text-gray-500 shrink-0 mt-0.5' aria-hidden />
+                      <div>
+                        <dt className='text-xs font-medium text-gray-500 uppercase tracking-wide'>End</dt>
+                        <dd className='text-sm font-semibold text-gray-900 mt-0.5'>
+                          {formatDate(sub.endDate)}
+                        </dd>
+                      </div>
+                    </div>
+                  </div>
+                  {typeof sub.daysRemaining === 'number' && (
+                    <div>
+                      <dt className='text-sm font-medium text-gray-500'>Days remaining</dt>
+                      <dd className='text-lg font-semibold text-gray-900 mt-0.5'>{sub.daysRemaining}</dd>
+                    </div>
+                  )}
+                  {typeof sub.paidAmount === 'number' && (
+                    <div>
+                      <dt className='text-sm font-medium text-gray-500'>Paid amount</dt>
+                      <dd className='text-lg font-semibold text-gray-900 mt-0.5'>
+                        ${sub.paidAmount.toFixed(2)}
+                      </dd>
+                    </div>
+                  )}
+                </dl>
+              ) : (
+                <p className='text-gray-700'>Your subscription is active.</p>
+              )}
 
-            {hasFullLibrary && (
-              <p className='mt-6 text-sm font-medium text-yellow-900 bg-yellow-50 border border-yellow-200 rounded-lg px-4 py-3'>
-                Full HAWSSA library access is included with your current subscription.
-              </p>
-            )}
+              {hasFullLibrary && (
+                <p className='mt-6 text-sm font-medium text-yellow-900 bg-yellow-50 border border-yellow-200 rounded-lg px-4 py-3'>
+                  Full HAWSSA library access is included with your current subscription.
+                </p>
+              )}
+            </div>
           </div>
+
+          {!hasFullLibrary && (
+            <div className='border-t border-gray-200 pt-10'>
+              <SubscriptionPlans variant='libraryOnly' />
+            </div>
+          )}
         </div>
       </div>
     );

@@ -89,21 +89,6 @@ export function HomeSkeleton() {
           </div>
         </div>
       </Section>
-
-      {/* Engagement Performance Skeleton */}
-      <Section>
-        <div className='space-y-6 bg-gray-50 rounded-lg p-6'>
-          <div className='text-center md:text-left'>
-            <Skeleton className='h-8 w-80 mx-auto md:mx-0 mb-2' />
-            <Skeleton className='h-4 w-96 mx-auto md:mx-0' />
-          </div>
-          <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
-            {Array.from({ length: 3 }).map((_, i) => (
-              <CardSkeleton key={i} />
-            ))}
-          </div>
-        </div>
-      </Section>
     </div>
   );
 }

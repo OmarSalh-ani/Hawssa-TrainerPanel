@@ -11,38 +11,44 @@ interface TrainingProgressProps {
   homeData?: HomeData;
 }
 
+function mapApiStatus(
+  status: string,
+): 'completed' | 'in-progress' | 'not-started' {
+  const s = status?.trim().toLowerCase();
+  if (s === 'completed' || s === 'مكتمل') return 'completed';
+  if (s === 'in progress' || s === 'قيد التقدم') return 'in-progress';
+  return 'not-started';
+}
+
 export default function TrainingProgress({ homeData }: TrainingProgressProps) {
-  // Transform API data to match component expectations
-  const mainTrainingCourse = homeData?.lastCourseProgress
+  const last = homeData?.lastCourseProgress;
+
+  const mainTrainingCourse = last
     ? {
         id: 1,
-        title: homeData.lastCourseProgress.courseName,
+        title: last.courseName,
         description: 'Continue your learning journey',
-        progress: homeData.lastCourseProgress.completePercent,
-        timeLeft: `${homeData.lastCourseProgress.hoursRemaining} hours remaining`,
-        status: (homeData.lastCourseProgress.status === 'In Progress'
-          ? 'in-progress'
-          : homeData.lastCourseProgress.status === 'Completed'
-          ? 'completed'
-          : 'not-started') as 'completed' | 'in-progress' | 'not-started',
-        lastAccess: homeData.lastCourseProgress.lastAccessTime,
-        image: '/assets/course1.png', // Default image
+        progress: last.completePercent,
+        timeLeft: `${last.hoursRemaining} hours remaining`,
+        status: mapApiStatus(last.status),
+        lastAccess: last.lastAccessTime,
+        image: '/assets/course1.png',
         module: 'Current Module',
         icon: Play,
         color: '#3B82F6',
       }
     : {
-        id: 1,
-        title: 'Complete Programming Course',
-        description: 'Master the fundamentals of programming',
-        progress: 25,
-        timeLeft: '3.2 hours remaining',
-        status: 'in-progress' as const,
-        lastAccess: '10 days ago',
+        id: 0,
+        title: 'No recent course activity',
+        description: 'Start or resume a course to see your progress here.',
+        progress: 0,
+        timeLeft: '—',
+        status: 'not-started' as const,
+        lastAccess: '—',
         image: '/assets/course1.png',
-        module: 'Current Module',
+        module: '—',
         icon: Play,
-        color: '#3B82F6',
+        color: '#94A3B8',
       };
 
   const additionalCourses =

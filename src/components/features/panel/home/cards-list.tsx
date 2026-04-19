@@ -17,7 +17,7 @@ export default function CardsList({ homeData }: CardsListProps) {
       description: 'Courses in progress',
       icon: 'BookOpen',
       color: '#3B82F6',
-      number: homeData?.coursesProgress.coursesCount || 0,
+      number: homeData?.coursesProgress?.coursesCount ?? 0,
       text: 'courses',
     },
     {
@@ -26,7 +26,7 @@ export default function CardsList({ homeData }: CardsListProps) {
       description: 'Overall completion',
       icon: 'TrendingUp',
       color: '#10B981',
-      number: homeData?.coursesProgress.overallProgressPercent || 0,
+      number: homeData?.coursesProgress?.overallProgressPercent ?? 0,
       text: '%',
     },
     {

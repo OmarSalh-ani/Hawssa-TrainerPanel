@@ -15,7 +15,7 @@ export default function CourseLibrary({ homeData }: CourseLibraryProps) {
       id: course.id,
       title: course.title,
       description: course.description,
-      image: course.image,
+      image: course.image ?? '/assets/course1.png',
       videoCount: 0, // Not available in API
       duration: 'N/A', // Not available in API
       uploadDate: course.uploadDate,

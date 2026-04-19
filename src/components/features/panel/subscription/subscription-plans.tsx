@@ -8,7 +8,14 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { SubscriptionForm } from './subscription-form';
 
-export function SubscriptionPlans() {
+export type SubscriptionPlansVariant = 'default' | 'libraryOnly';
+
+interface SubscriptionPlansProps {
+  /** When `libraryOnly`, only plans with `unlocksFullHawssaLibrary` are shown (add-on for existing members). */
+  variant?: SubscriptionPlansVariant;
+}
+
+export function SubscriptionPlans({ variant = 'default' }: SubscriptionPlansProps) {
   const location = useLocation();
   const libraryPlanRef = useRef<HTMLDivElement | null>(null);
   const { data: subscriptionData, isLoading, error } = useSubscriptionTypes();
@@ -17,18 +24,21 @@ export function SubscriptionPlans() {
 
   const subscriptions = useMemo(() => {
     const raw = subscriptionData?.data?.subscriptions || [];
+    const libraryFiltered =
+      variant === 'libraryOnly' ? raw.filter(p => p.unlocksFullHawssaLibrary) : raw;
     const focusFullLibrary = !!(location.state as { focusFullLibrary?: boolean } | null)
       ?.focusFullLibrary;
+    if (variant === 'libraryOnly') return libraryFiltered;
     if (!focusFullLibrary) return raw;
     return [...raw].sort(
       (a, b) => Number(!!b.unlocksFullHawssaLibrary) - Number(!!a.unlocksFullHawssaLibrary),
     );
-  }, [subscriptionData?.data?.subscriptions, location.state]);
+  }, [subscriptionData?.data?.subscriptions, location.state, variant]);
 
-  const firstLibraryPlanIndex = useMemo(
-    () => subscriptions.findIndex(p => p.unlocksFullHawssaLibrary),
-    [subscriptions],
-  );
+  const firstLibraryPlanIndex = useMemo(() => {
+    if (variant === 'libraryOnly') return subscriptions.length > 0 ? 0 : -1;
+    return subscriptions.findIndex(p => p.unlocksFullHawssaLibrary);
+  }, [subscriptions, variant]);
 
   useEffect(() => {
     const focusFullLibrary = !!(location.state as { focusFullLibrary?: boolean } | null)
@@ -58,14 +68,21 @@ export function SubscriptionPlans() {
   };
 
   if (isLoading) {
+    const skeletonCount = variant === 'libraryOnly' ? 2 : 6;
     return (
       <div className='space-y-8'>
         <div className='text-center'>
-          <h2 className='text-3xl font-bold text-gray-900 mb-4'>Choose Your Plan</h2>
-          <p className='text-gray-600'>Select the subscription plan that works best for you</p>
+          <h2 className='text-3xl font-bold text-gray-900 mb-4'>
+            {variant === 'libraryOnly' ? 'Full HAWSSA library' : 'Choose Your Plan'}
+          </h2>
+          <p className='text-gray-600'>
+            {variant === 'libraryOnly'
+              ? 'Add-on plans that unlock every past and future Hawssa release'
+              : 'Select the subscription plan that works best for you'}
+          </p>
         </div>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-          {Array.from({ length: 6 }).map((_, i) => (
+          {Array.from({ length: skeletonCount }).map((_, i) => (
             <CardSkeleton key={i} />
           ))}
         </div>
@@ -83,13 +100,31 @@ export function SubscriptionPlans() {
     );
   }
 
+  if (variant === 'libraryOnly' && subscriptions.length === 0) {
+    return (
+      <div className='rounded-xl border border-amber-200 bg-amber-50 px-6 py-8 text-center text-amber-950'>
+        <h2 className='text-lg font-semibold mb-2'>Library add-on not available</h2>
+        <p className='text-sm text-amber-900/90'>
+          No full-library subscription type is configured yet. Please contact support or check back
+          later.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className='space-y-8'>
 
       {/* Header */}
       <div className='text-center'>
-        <h2 className='text-3xl font-bold text-gray-900 mb-4'>Choose Your Plan</h2>
-        <p className='text-gray-600'>Select the subscription plan that works best for you</p>
+        <h2 className='text-3xl font-bold text-gray-900 mb-4'>
+          {variant === 'libraryOnly' ? 'Full HAWSSA library add-on' : 'Choose Your Plan'}
+        </h2>
+        <p className='text-gray-600'>
+          {variant === 'libraryOnly'
+            ? 'Unlock every past Hawssa release and choreography. This is a separate purchase; your current membership stays as-is.'
+            : 'Select the subscription plan that works best for you'}
+        </p>
       </div>
 
       {/* Plans Grid */}
@@ -97,13 +132,21 @@ export function SubscriptionPlans() {
         {subscriptions.map((plan, index) => {
           const Icon = getPlanIcon(index);
           const color = getPlanColor(index);
-          const isPopular = index === 2; // Mark second plan as popular
+          const isPopular = variant === 'default' && index === 2; // Mark second plan as popular
           const isLibraryPlan = !!plan.unlocksFullHawssaLibrary;
 
           return (
             <div
               key={plan.id}
-              ref={index === firstLibraryPlanIndex ? libraryPlanRef : undefined}
+              ref={
+                variant === 'libraryOnly'
+                  ? index === 0
+                    ? libraryPlanRef
+                    : undefined
+                  : index === firstLibraryPlanIndex
+                    ? libraryPlanRef
+                    : undefined
+              }
               className={`relative bg-white rounded-xl shadow-lg border-2 transition-all duration-300 hover:shadow-xl hover:scale-105 ${
                 isPopular ? 'border-purple-500 ring-2 ring-purple-200' : 'border-gray-200'
               } ${isLibraryPlan ? 'ring-2 ring-yellow-300 border-yellow-400' : ''}`}
@@ -163,14 +206,29 @@ export function SubscriptionPlans() {
                     <Calendar className='w-4 h-4 mr-2' style={{ color }} />
                     <span>{plan.daysCount} days access</span>
                   </div>
-                  <div className='flex items-center text-sm text-gray-600'>
-                    <Crown className='w-4 h-4 mr-2' style={{ color }} />
-                    <span>All courses included</span>
-                  </div>
-                  <div className='flex items-center text-sm text-gray-600'>
-                    <Zap className='w-4 h-4 mr-2' style={{ color }} />
-                    <span>Premium features</span>
-                  </div>
+                  {variant === 'libraryOnly' || isLibraryPlan ? (
+                    <>
+                      <div className='flex items-center text-sm text-gray-600'>
+                        <Crown className='w-4 h-4 mr-2' style={{ color }} />
+                        <span>All Hawssa release albums &amp; videos</span>
+                      </div>
+                      <div className='flex items-center text-sm text-gray-600'>
+                        <Zap className='w-4 h-4 mr-2' style={{ color }} />
+                        <span>Full choreography library access</span>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className='flex items-center text-sm text-gray-600'>
+                        <Crown className='w-4 h-4 mr-2' style={{ color }} />
+                        <span>All courses included</span>
+                      </div>
+                      <div className='flex items-center text-sm text-gray-600'>
+                        <Zap className='w-4 h-4 mr-2' style={{ color }} />
+                        <span>Premium features</span>
+                      </div>
+                    </>
+                  )}
                 </div>
 
                 {/* Select Button */}
@@ -179,7 +237,7 @@ export function SubscriptionPlans() {
                   className='w-full py-3 px-4 rounded-lg font-medium text-white transition-colors hover:opacity-90'
                   style={{ backgroundColor: color }}
                 >
-                  Select Plan
+                  {variant === 'libraryOnly' ? 'Unlock full library' : 'Select Plan'}
                 </button>
               </div>
             </div>

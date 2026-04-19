@@ -154,62 +154,7 @@ export default function ReleaseDetailsContent({ releaseId }: ReleaseDetailsConte
         </div>
       </div>
 
-      {/* About Section */}
-      <div className='py-16 bg-white'>
-        <div className='max-w-6xl mx-auto px-6'>
-          <div className='grid grid-cols-1 lg:grid-cols-2 gap-12 items-center'>
-            {/* Text Content */}
-            <div className='space-y-6'>
-              <div>
-                <h2 className='text-3xl font-bold text-gray-800 mb-2'>
-                  About {release.title}
-                </h2>
-               
-              </div>
-
-              <p className='text-gray-700 leading-relaxed'>
-                {release.description}
-              </p>
-
-              {/* Feature Cards */}
-              <div className='grid grid-cols-2 gap-4'>
-                {fullReleaseInfo?.releaseDate && (
-                  <div className='bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex items-center gap-3'>
-                    <div className='w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center'>
-                      <Calendar className='w-4 h-4 text-black' />
-                    </div>
-                    <span className='font-medium text-gray-800'>{formatDate(fullReleaseInfo.releaseDate)}</span>
-                  </div>
-                )}
-                <div className='bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex items-center gap-3'>
-                  <div className='w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center'>
-                    <Play className='w-4 h-4 text-black' />
-                  </div>
-                  <span className='font-medium text-gray-800'>{videos.length} Video{videos.length !== 1 ? 's' : ''}</span>
-                </div>
-               
-                
-              </div>
-            </div>
-
-            {/* Image */}
-            <div className='relative'>
-              {release.imageUrl ? (
-                <img
-                  src={release.imageUrl}
-                  alt={release.title}
-                  width={500}
-                  height={400}
-                  className='rounded-lg shadow-lg object-cover'
-                />
-              ) : (
-                <div className='w-full h-[400px] bg-gradient-to-r from-[#D7582B] to-[#C9633F] rounded-lg shadow-lg' />
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-
+    
       {/* Program Videos Section */}
       <div className='py-16 bg-gray-50'>
         <div className='max-w-6xl mx-auto px-6'>
