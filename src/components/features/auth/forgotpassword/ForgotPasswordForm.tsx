@@ -26,12 +26,13 @@ import {
 } from '@/lib/schemes/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowLeft, CheckCircle, Eye, EyeOff, Lock, Mail } from 'lucide-react';
-import Link from 'next/link';
+import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
 export default function ForgotPasswordForm() {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -138,7 +139,7 @@ export default function ForgotPasswordForm() {
       if (response.message) {
         toast.success(response.message);
         // Redirect to login page
-        window.location.href = '/login';
+        navigate('/login');
       } else {
         toast.error(response.message || 'Failed to reset password. Please try again.');
       }
@@ -492,7 +493,7 @@ export default function ForgotPasswordForm() {
         <div className='text-center space-y-2'>
           <p className='text-sm text-gray-600'>
             Remember your password?{' '}
-            <Link href='/login' className='font-medium text-yellow-600 hover:text-yellow-500'>
+            <Link to='/login' className='font-medium text-yellow-600 hover:text-yellow-500'>
               Sign in
             </Link>
           </p>

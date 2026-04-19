@@ -2,11 +2,12 @@
 
 import { useSubscriptionStatus } from '@/hooks/subscription';
 import { SubscriptionData } from '@/lib/data/engagement';
+import { hasActiveSubscription } from '@/lib/utils/subscription-access';
 import { AlertCircle, CheckCircle, CreditCard, XCircle } from 'lucide-react';
 import { useState } from 'react';
 import { SubscriptionPlans } from '../subscription/subscription-plans';
 import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/navigation';
+import { useNavigate } from 'react-router-dom';
 
 interface SubscriptionStatusCardProps {
   data?: SubscriptionData;
@@ -15,10 +16,9 @@ interface SubscriptionStatusCardProps {
 export default function SubscriptionStatusCard({}: SubscriptionStatusCardProps) {
   const { data: subscriptionStatus, isLoading } = useSubscriptionStatus();
   const [showPlans, setShowPlans] = useState(false);
-  const router = useRouter();
+  const navigate = useNavigate();
   const handleManageSubscription = () => {
-    // setShowPlans(true);
-    router.push('/subscription');
+    navigate('/subscription');
   };
 
   // Use API data if available, otherwise fall back to props
@@ -36,8 +36,8 @@ export default function SubscriptionStatusCard({}: SubscriptionStatusCardProps) 
   //     buttonColor: '#FDE047',
   //   };
 
-  const isActive = subscriptionStatus?.data?.isVerified && !subscriptionStatus?.data?.isExpired;
-  const isExpired = subscriptionStatus?.data?.isExpired;
+  const isActive = hasActiveSubscription(subscriptionStatus);
+  const isExpired = subscriptionStatus?.data?.isExpired ?? false;
 
   if (isLoading) {
     return (

@@ -73,6 +73,7 @@ export const useSubscribeToPlan = (lang: string = 'en') => {
       // Invalidate and refetch subscription status after successful subscription
       queryClient.invalidateQueries({ queryKey: subscriptionKeys.status() });
       queryClient.invalidateQueries({ queryKey: subscriptionKeys.all });
+      queryClient.invalidateQueries({ queryKey: ['releases'] });
     },
   });
 };

@@ -15,8 +15,7 @@ import { loginSchema, type LoginFormData } from '@/lib/schemes/auth';
 import { setToken } from '@/lib/utils/cookie';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff, Loader2, Lock, Mail } from 'lucide-react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -24,7 +23,7 @@ import { toast } from 'sonner';
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  const navigate = useNavigate();
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -46,7 +45,7 @@ export default function LoginForm() {
         setToken(response.data.token);
         console.log(response.data.token);
         toast.success(response.message);
-        router.push('/');
+        navigate('/');
       } else {
         toast.error(response.message || 'Login failed. Please check your credentials.');
       }
@@ -126,7 +125,7 @@ export default function LoginForm() {
 
           <div className='flex items-center justify-between'>
             <Link
-              href='/forgot-password'
+              to='/forgot-password'
               className='text-sm font-medium text-yellow-600 hover:text-yellow-500'
             >
               Forgot password?
@@ -147,7 +146,7 @@ export default function LoginForm() {
         <p className='text-sm text-gray-600'>
           Don&apos;t have an account?{' '}
           <Link
-            href='/signup'
+            to='/signup'
             className='font-medium text-yellow-600 hover:text-yellow-500 underline underline-offset-4'
           >
             Create New Account

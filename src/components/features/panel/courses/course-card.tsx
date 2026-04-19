@@ -1,8 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Course } from '@/lib/types/courses';
 import { Lock, Play } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 
 interface CourseCardProps {
   course: Course;
@@ -65,7 +64,11 @@ export function CourseCard({ course }: CourseCardProps) {
     <div className='bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200'>
       {/* Course Image */}
       <div className='relative aspect-video bg-gray-100'>
-        <Image src={course.image} alt={course.title} fill className='object-cover' />
+        <img
+          src={course.image}
+          alt={course.title}
+          className='absolute inset-0 h-full w-full object-cover'
+        />
 
         {/* Video Count Badge */}
         <div className='absolute top-3 right-3 bg-yellow-400 text-gray-800 px-2 py-1 rounded-md text-sm font-medium flex items-center gap-1'>
@@ -119,7 +122,7 @@ export function CourseCard({ course }: CourseCardProps) {
         </div>
 
         {/* Action Button */}
-        <Link href={`/courses/${course.id}`}>
+        <Link to={`/courses/${course.id}`}>
           <Button
             className='w-full bg-yellow-400 hover:bg-yellow-500 text-gray-800 font-medium'
             variant={getButtonVariant(course.status)}

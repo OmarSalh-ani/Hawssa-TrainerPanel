@@ -1,4 +1,3 @@
-import Team from '@/components/shared/team';
 import HeroBanner from './hero-banner';
 import LatestReleasesSection from './latest-releases-section';
 import StatisticsSection from './statistics-section';
@@ -15,10 +14,8 @@ export default function HawssaReleasesContent() {
       {/* Featured Section */}
       {/* <FeaturedSection /> */}
 
-      {/* Latest Releases Section */}
+      {/* Latest releases: each album card shows title, optional song name, and video count */}
       <LatestReleasesSection />
-      {/*  */}
-      <Team />
     </div>
   );
 }

@@ -22,7 +22,13 @@ export const releaseKeys = {
 export const useReleases = (params: GetReleasesRequest, lang: string = 'en') => {
   return useQuery({
     queryKey: releaseKeys.list(params),
-    queryFn: () => getReleases(params, lang),
+    queryFn: async () => {
+      const res = await getReleases(params, lang);
+      if (!res.success) {
+        throw new Error(res.message || 'Failed to load releases');
+      }
+      return res;
+    },
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
   });
@@ -37,7 +43,15 @@ export const useReleases = (params: GetReleasesRequest, lang: string = 'en') => 
 export const useReleaseVideos = (releaseId: number, lang: string = 'en') => {
   return useQuery({
     queryKey: releaseKeys.video(releaseId),
-    queryFn: () => getReleaseVideos(releaseId, lang),
+    queryFn: async () => {
+      const res = await getReleaseVideos(releaseId, lang);
+      if (!res.success) {
+        const err = new Error(res.message || 'Failed to load release videos') as Error & { code?: string };
+        if (res.errorPayload?.code) err.code = res.errorPayload.code;
+        throw err;
+      }
+      return res;
+    },
     enabled: !!releaseId,
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes

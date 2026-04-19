@@ -39,12 +39,6 @@ export interface ForgotPasswordStep3Response {
 
 // Registration API Response Types
 export interface RegistrationStep1Response {
-  message: string;
-  otp: string;
-}
-
-export interface RegistrationStep2Response {
-  message: string;
   token: string;
 }
 
@@ -57,11 +51,6 @@ export interface RegistrationStep1Request {
   isMale: boolean;
   password: string;
   confirmPassword: string;
-}
-
-export interface RegistrationStep2Request {
-  email: string;
-  otp: string;
 }
 
 // API Error Response Type

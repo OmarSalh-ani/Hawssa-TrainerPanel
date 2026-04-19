@@ -2,7 +2,7 @@
 
 import { CourseDetails } from '@/lib/types/courses';
 import { ChevronRight, Home } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 
 interface CourseDetailsHeroProps {
   course: CourseDetails;
@@ -29,7 +29,7 @@ export function CourseDetailsHero({ course }: CourseDetailsHeroProps) {
         <div className='max-w-4xl'>
           {/* Breadcrumb */}
           <nav className='flex items-center space-x-2 text-white/90 text-sm mb-6'>
-            <Link href='/courses' className='flex items-center hover:text-white transition-colors'>
+            <Link to='/courses' className='flex items-center hover:text-white transition-colors'>
               <Home className='w-4 h-4 mr-1' />
               Courses
             </Link>

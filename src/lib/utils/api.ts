@@ -6,11 +6,13 @@ export interface ApiResponse<T = unknown> {
   data: T;
   message: string;
   errors: unknown;
+  /** Set on some failed requests (e.g. locked Hawssa release). */
+  errorPayload?: { code?: string };
 }
 
 // GET request
 export const get = async <T = unknown>(endpoint: string): Promise<T> => {
-  const api = await baseAPI();
+  const api = baseAPI();
   const response = await api.get(endpoint);
   return response?.data;
 };
@@ -21,7 +23,7 @@ export const post = async <T = unknown>(
   payload: unknown,
 ): Promise<ApiResponse<T>> => {
   try {
-    const api = await baseAPI();
+    const api = baseAPI();
     const response = await api.post(endpoint, payload);
     return {
       success: response?.data?.isSuccess ?? true,
@@ -45,7 +47,7 @@ export const put = async <T = unknown>(
   payload: unknown,
 ): Promise<ApiResponse<T>> => {
   try {
-    const api = await baseAPI();
+    const api = baseAPI();
     const response = await api.put(endpoint, payload);
     return {
       success: response?.data?.isSuccess ?? true,

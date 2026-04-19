@@ -3,8 +3,8 @@
 import { usePaymentMethods, useSubscribeToPlan } from '@/hooks/subscription';
 import { PaymentMethod, Subscription, SubscriptionFormData } from '@/lib/types/subscription';
 import { AlertCircle, CreditCard, Upload, X } from 'lucide-react';
-import Image from 'next/image';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface SubscriptionFormProps {
   selectedPlan: Subscription;
@@ -12,6 +12,7 @@ interface SubscriptionFormProps {
 }
 
 export function SubscriptionForm({ selectedPlan, onClose }: SubscriptionFormProps) {
+  const navigate = useNavigate();
   const { data: paymentMethodsData, isLoading: isLoadingPaymentMethods } = usePaymentMethods();
   const subscribeMutation = useSubscribeToPlan();
 
@@ -55,8 +56,12 @@ export function SubscriptionForm({ selectedPlan, onClose }: SubscriptionFormProp
     }
 
     try {
-      await subscribeMutation.mutateAsync(formData);
+      const result = await subscribeMutation.mutateAsync(formData);
+      if (!result.success) {
+        return;
+      }
       onClose();
+      navigate('/pending-review', { replace: true });
     } catch (error) {
       console.error('Subscription failed:', error);
     }
@@ -185,11 +190,10 @@ export function SubscriptionForm({ selectedPlan, onClose }: SubscriptionFormProp
               <div className='mt-4'>
                 <p className='text-sm font-medium text-gray-700 mb-2'>Preview:</p>
                 <div className='relative w-32 h-32 border rounded-lg overflow-hidden'>
-                  <Image
+                  <img
                     src={URL.createObjectURL(formData.paymentProofImage)}
                     alt='Payment proof preview'
-                    fill
-                    className='object-cover'
+                    className='absolute inset-0 h-full w-full object-cover'
                   />
                 </div>
               </div>

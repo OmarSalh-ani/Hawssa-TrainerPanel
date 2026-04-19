@@ -1,18 +1,24 @@
 'use client';
 import { useReleases } from '@/hooks/releases';
 import AlbumCard from './album-card';
+import { UnlockFullLibraryModal } from './unlock-full-library-modal';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useState } from 'react';
 
 export default function LatestReleasesSection() {
   const { data, isLoading, error } = useReleases({ page: 1, pageSize: 8 }, 'en');
   const releases = data?.data?.items || [];
+  const [unlockOpen, setUnlockOpen] = useState(false);
 
   if (error) {
     return (
       <div className='py-16 bg-gray-50'>
         <div className='max-w-7xl mx-auto px-6'>
-          <div className='text-center text-red-600'>
-            <p>Failed to load releases. Please try again later.</p>
+          <div className='max-w-xl mx-auto text-center rounded-lg border border-amber-200 bg-amber-50 px-6 py-8 text-amber-950'>
+            <h3 className='text-lg font-semibold mb-2'>Hawssa Releases unavailable</h3>
+            <p className='text-amber-900/90'>
+              {error instanceof Error ? error.message : 'Failed to load releases. Please try again later.'}
+            </p>
           </div>
         </div>
       </div>
@@ -21,6 +27,7 @@ export default function LatestReleasesSection() {
 
   return (
     <div className='py-16 bg-gray-50'>
+      <UnlockFullLibraryModal open={unlockOpen} onClose={() => setUnlockOpen(false)} />
       <div className='max-w-7xl mx-auto px-6'>
         {/* Section Header */}
         <div className='mb-8'>
@@ -49,10 +56,12 @@ export default function LatestReleasesSection() {
               <AlbumCard
                 key={release.id}
                 title={release.title}
-                description={release.description}
+                songName={release.songName}
                 videoCount={`${release.videosCount} Video${release.videosCount !== 1 ? 's' : ''}`}
                 image={release.imageUrl}
                 href={`/hawssa-releases/${release.id}`}
+                isLocked={!!release.isLocked}
+                onLockedClick={() => setUnlockOpen(true)}
               />
             ))}
           </div>

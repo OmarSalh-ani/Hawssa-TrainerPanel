@@ -1,7 +1,6 @@
 'use client';
 import { Course } from '@/lib/data/courses';
 import { Clock, Lock, Star, Users } from 'lucide-react';
-import Image from 'next/image';
 
 interface CourseCardProps {
   course: Course;
@@ -34,11 +33,10 @@ export default function CourseCard({ course }: CourseCardProps) {
     <div className='bg-white rounded-lg shadow-lg overflow-hidden relative'>
       {/* Image Section */}
       <div className='relative h-48 overflow-hidden'>
-        <Image
+        <img
           src={course.image}
           alt={course.title}
-          fill
-          className={`object-cover ${course.isLocked ? 'blur-sm' : ''}`}
+          className={`absolute inset-0 h-full w-full object-cover ${course.isLocked ? 'blur-sm' : ''}`}
         />
 
         {/* Premium Overlay */}

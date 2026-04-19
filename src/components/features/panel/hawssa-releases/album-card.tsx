@@ -1,41 +1,65 @@
 import { Button } from '@/components/ui/button';
-import { Video } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
+import { Lock, Video } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface AlbumCardProps {
   title: string;
-  description: string;
+  songName?: string | null;
   videoCount: string;
   image: string;
   href: string;
   className?: string;
+  isLocked?: boolean;
+  onLockedClick?: () => void;
 }
 
 export default function AlbumCard({
   title,
-  description,
+  songName,
   videoCount,
   image,
   href,
   className = '',
+  isLocked = false,
+  onLockedClick,
 }: AlbumCardProps) {
+  const songLabel = songName?.trim() ? songName.trim() : 'No song';
+
+  const openLocked = () => onLockedClick?.();
+
   return (
     <div
-      className={`bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden group hover:shadow-md transition-shadow ${className}`}
+      className={`bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden group hover:shadow-md transition-shadow ${isLocked ? 'cursor-pointer' : ''} ${className}`}
+      role={isLocked ? 'button' : undefined}
+      tabIndex={isLocked ? 0 : undefined}
+      onClick={isLocked ? openLocked : undefined}
+      onKeyDown={
+        isLocked
+          ? e => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                openLocked();
+              }
+            }
+          : undefined
+      }
     >
       {/* Image Container */}
       <div className='relative aspect-video overflow-hidden'>
         {image ? (
-          <Image
+          <img
             src={image}
             alt={title}
-            fill
-            className='object-cover group-hover:scale-105 transition-transform duration-300'
+            className='absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-300'
           />
         ) : (
           <div className='w-full h-full bg-gradient-to-r from-[#D7582B] to-[#C9633F] flex items-center justify-center'>
             <span className='text-white text-2xl font-bold'>{title.charAt(0)}</span>
+          </div>
+        )}
+        {isLocked && (
+          <div className='absolute inset-0 bg-black/45 flex items-center justify-center pointer-events-none'>
+            <Lock className='w-12 h-12 text-yellow-400 drop-shadow-md' aria-hidden />
           </div>
         )}
         {/* Video Count Badge */}
@@ -48,14 +72,20 @@ export default function AlbumCard({
       {/* Content */}
       <div className='p-4 space-y-3'>
         <h3 className='font-semibold text-gray-800 text-lg line-clamp-2'>{title}</h3>
-        <p className='text-gray-600 text-sm line-clamp-3'>{description}</p>
+      
 
         {/* Action Button */}
-        <Link href={href}>
-          <Button className='w-full bg-yellow-400 text-black hover:bg-yellow-300 font-semibold'>
-            View Album
+        {isLocked ? (
+          <Button type='button' className='w-full bg-yellow-400 text-black hover:bg-yellow-300 font-semibold'>
+            View Release
           </Button>
-        </Link>
+        ) : (
+          <Link to={href} onClick={e => e.stopPropagation()}>
+            <Button className='w-full bg-yellow-400 text-black hover:bg-yellow-300 font-semibold'>
+              View Release
+            </Button>
+          </Link>
+        )}
       </div>
     </div>
   );

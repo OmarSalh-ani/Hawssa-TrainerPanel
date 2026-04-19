@@ -21,7 +21,6 @@ import { useCities, useGovernments } from '@/hooks/locations';
 import { useUpdateProfile } from '@/hooks/profile';
 import { Profile } from '@/lib/types/profile';
 import { zodResolver } from '@hookform/resolvers/zod';
-import Image from 'next/image';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { parsePhoneNumber, type Country } from 'react-phone-number-input';
@@ -261,7 +260,7 @@ export default function ProfileUpdateForm({ profile, onUpdated }: ProfileUpdateF
                 />
               </FormControl>
               {filePreview && (
-                <Image
+                <img
                   src={filePreview}
                   alt='profile preview'
                   width={64}

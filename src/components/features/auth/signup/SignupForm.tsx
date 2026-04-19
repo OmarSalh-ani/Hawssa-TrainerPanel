@@ -24,7 +24,7 @@ import {
 import { signupSchema, type SignupFormData } from '@/lib/schemes/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff, Lock, Mail, User, Users } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { getCountryCallingCode } from 'react-phone-number-input';
@@ -393,11 +393,11 @@ export default function SignupForm() {
             />
             <label htmlFor='terms' className='text-sm text-gray-700'>
               I agree to the{' '}
-              <Link href='#' className='text-yellow-600 hover:text-yellow-500 underline'>
+              <Link to='#' className='text-yellow-600 hover:text-yellow-500 underline'>
                 Terms of Service
               </Link>{' '}
               and{' '}
-              <Link href='#' className='text-yellow-600 hover:text-yellow-500 underline'>
+              <Link to='#' className='text-yellow-600 hover:text-yellow-500 underline'>
                 Privacy Policy
               </Link>
             </label>
@@ -417,7 +417,7 @@ export default function SignupForm() {
         <p className='text-sm text-gray-600'>
           Already have an account?{' '}
           <Link
-            href='/login'
+            to='/login'
             className='font-medium text-yellow-600 hover:text-yellow-500 underline underline-offset-4'
           >
             Sign In

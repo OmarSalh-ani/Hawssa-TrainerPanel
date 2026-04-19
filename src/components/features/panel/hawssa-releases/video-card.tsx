@@ -1,10 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { Play } from 'lucide-react';
-import Image from 'next/image';
 
 interface VideoCardProps {
   title: string;
   description: string;
+  songName?: string | null;
+  choreographyName?: string | null;
   duration: string;
   image: string;
   onWatch?: () => void;
@@ -14,11 +15,16 @@ interface VideoCardProps {
 export default function VideoCard({
   title,
   description,
+  songName,
+  choreographyName,
   duration,
   image,
   onWatch,
   className = '',
 }: VideoCardProps) {
+  const songLabel = songName?.trim() ? songName.trim() : 'No song';
+  const choreographyLabel = choreographyName?.trim() ? choreographyName.trim() : 'No choreography';
+
   return (
     <div
       className={`bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden group hover:shadow-md transition-shadow ${className}`}
@@ -39,11 +45,10 @@ export default function VideoCard({
         }}
       >
         {image ? (
-          <Image
+          <img
             src={image}
             alt={title}
-            fill
-            className='object-cover group-hover:scale-105 transition-transform duration-300'
+            className='absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-300'
           />
         ) : (
           <div className='w-full h-full bg-gradient-to-r from-[#D7582B] to-[#C9633F] flex items-center justify-center'>
@@ -69,7 +74,14 @@ export default function VideoCard({
       {/* Content */}
       <div className='p-4 space-y-3'>
         <h3 className='font-semibold text-gray-800 text-lg line-clamp-2'>{title}</h3>
-        <p className='text-gray-600 text-sm line-clamp-3'>{description}</p>
+        <p className='text-sm text-gray-800 leading-snug'>
+          <span className='font-semibold text-gray-600'>Song:</span>{' '}
+          <span className={songName?.trim() ? 'text-gray-900' : 'text-gray-500'}>{songLabel}</span>
+        </p>
+        <p className='text-sm text-gray-800 leading-snug'>
+          <span className='font-semibold text-gray-600'>Choreography:</span>{' '}
+          <span className={choreographyName?.trim() ? 'text-gray-900' : 'text-gray-500'}>{choreographyLabel}</span>
+        </p>
 
         {/* Action Button */}
         <Button

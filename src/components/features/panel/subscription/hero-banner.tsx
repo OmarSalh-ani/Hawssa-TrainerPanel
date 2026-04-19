@@ -1,5 +1,4 @@
 import { BarChart3, CreditCard, Headphones } from 'lucide-react';
-import Image from 'next/image';
 
 interface HeroBannerProps {
   title: string;
@@ -21,12 +20,10 @@ export function HeroBanner({ title, subtitle, benefits }: HeroBannerProps) {
     <div className='relative bg-gradient-to-br from-purple-900 via-red-900 to-orange-900 min-h-[400px] flex items-center justify-center overflow-hidden'>
       {/* Background Image */}
       <div className='absolute inset-0'>
-        <Image
+        <img
           src='/assets/subscription-banner.png'
           alt='Fitness training background'
-          fill
-          className='object-cover opacity-80'
-          priority
+          className='absolute inset-0 h-full w-full object-cover opacity-80'
         />
       </div>
 

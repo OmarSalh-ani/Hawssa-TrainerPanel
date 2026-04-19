@@ -1,5 +1,3 @@
-import Image from 'next/image';
-
 interface HeroBannerProps {
   title: string;
   subtitle: string;
@@ -9,12 +7,10 @@ interface HeroBannerProps {
 export function HeroBanner({ title, subtitle, description }: HeroBannerProps) {
   return (
     <div className='relative bg-gradient-to-br from-orange-600 via-orange-700 to-purple-800 min-h-[400px] overflow-hidden'>
-      <Image
+      <img
         src='/assets/subscription-banner.png'
         alt='Courses Banner'
-        fill
-        className='object-cover'
-        priority
+        className='absolute inset-0 h-full w-full object-cover'
       />
       <div className='absolute inset-0 bg-black/40' />
 

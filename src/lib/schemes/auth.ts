@@ -42,17 +42,14 @@ export const registrationStep1Schema = z
       .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
         'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'),
     confirmPassword: z.string().min(1, 'Please confirm your password'),
+    acceptTerms: z.boolean().refine(val => val === true, {
+      message: 'You must agree to the Terms, Privacy Policy, and Instructor Agreement to continue',
+    }),
   })
   .refine(data => data.password === data.confirmPassword, {
     message: "Passwords don't match",
     path: ['confirmPassword'],
   });
-
-// Registration Step 2 Schema (OTP Verification)
-export const registrationStep2Schema = z.object({
-  email: z.string().min(1, 'Email is required').email('Please enter a valid email address'),
-  otp: z.string().min(1, 'OTP is required').length(4, 'OTP must be exactly 4 digits'),
-});
 
 // Forgot Password Step 1 Schema (Request Password Reset)
 export const forgotPasswordStep1Schema = z.object({
@@ -128,7 +125,6 @@ export const signupSchema = z
 export type LoginFormData = z.infer<typeof loginSchema>;
 export type SignupFormData = z.infer<typeof signupSchema>;
 export type RegistrationStep1Data = z.infer<typeof registrationStep1Schema>;
-export type RegistrationStep2Data = z.infer<typeof registrationStep2Schema>;
 export type ForgotPasswordStep1Data = z.infer<typeof forgotPasswordStep1Schema>;
 export type ForgotPasswordStep2Data = z.infer<typeof forgotPasswordStep2Schema>;
 export type ForgotPasswordStep3Data = z.infer<typeof forgotPasswordStep3Schema>;

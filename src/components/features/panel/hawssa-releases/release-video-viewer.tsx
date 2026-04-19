@@ -1,9 +1,9 @@
 'use client';
 
 import { ReleaseVideo } from '@/lib/types/releases';
+import { getReleaseVideoChoreographyName, getReleaseVideoSongName } from '@/lib/utils/release-videos';
 import { Play, X, Pause } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import Script from 'next/script';
 import { useEffect, useRef, useState } from 'react';
 
 interface ReleaseVideoViewerProps {
@@ -40,6 +40,8 @@ export function ReleaseVideoViewer({ video, onClose }: ReleaseVideoViewerProps) 
   };
   type VimeoGlobal = { Player: new (element: HTMLIFrameElement) => PlayerAPI };
   const isVimeo = !!video.videoUrl && video.videoUrl.includes('vimeo.com');
+  const displaySong = getReleaseVideoSongName(video) ?? 'No song';
+  const displayChoreography = getReleaseVideoChoreographyName(video) ?? 'No choreography';
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const [player, setPlayer] = useState<PlayerAPI | null>(null);
   const [showOverlay, setShowOverlay] = useState<boolean>(isVimeo);
@@ -133,7 +135,19 @@ export function ReleaseVideoViewer({ video, onClose }: ReleaseVideoViewerProps) 
   };
 
   useEffect(() => {
-    if (isVimeo) initVimeo();
+    if (!isVimeo) return;
+    const scriptId = 'vimeo-player-api';
+    const existing = document.getElementById(scriptId);
+    if (existing) {
+      initVimeo();
+      return;
+    }
+    const script = document.createElement('script');
+    script.id = scriptId;
+    script.src = 'https://player.vimeo.com/api/player.js';
+    script.async = true;
+    script.onload = () => initVimeo();
+    document.body.appendChild(script);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVimeo, video.videoUrl]);
 
@@ -172,9 +186,6 @@ export function ReleaseVideoViewer({ video, onClose }: ReleaseVideoViewerProps) 
 
   return (
     <div className='fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4'>
-      {isVimeo && (
-        <Script src='https://player.vimeo.com/api/player.js' strategy='afterInteractive' onLoad={initVimeo} />
-      )}
       <div className='bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden'>
         <div className='flex items-center justify-between p-4 border-b'>
           <div className='flex items-center space-x-2'>
@@ -347,7 +358,16 @@ export function ReleaseVideoViewer({ video, onClose }: ReleaseVideoViewerProps) 
 
             <div>
               <h3 className='text-lg font-semibold text-gray-900 mb-2'>{video.title}</h3>
-              {video.description && <p className='text-gray-600 mb-4'>{video.description}</p>}
+              <p className='text-sm font-medium text-gray-700 mb-2'>
+                Song:{' '}
+                <span className={displaySong === 'No song' ? 'text-gray-500 font-normal' : ''}>{displaySong}</span>
+              </p>
+              <p className='text-sm font-medium text-gray-700 mb-2'>
+                Choreography:{' '}
+                <span className={displayChoreography === 'No choreography' ? 'text-gray-500 font-normal' : ''}>
+                  {displayChoreography}
+                </span>
+              </p>
               <div className='mt-4 flex items-center space-x-4'>
                 <span className='text-sm text-gray-500'>
                   Duration: {formatDuration(video.lengthInSeconds)}

@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useProfile } from '@/hooks/profile';
 import { Edit } from 'lucide-react';
-import Image from 'next/image';
 import { useState } from 'react';
 import ProfileAvailabilityForm from './profile-availability-form';
 import ProfileUpdateForm from './profile-update-form';
@@ -61,7 +60,7 @@ export default function ProfileBanner() {
           <div className='w-24 h-24 bg-yellow-400 rounded-full flex items-center justify-center'>
             <div className='w-16 h-16 bg-white rounded-full flex items-center justify-center'>
               {profile.imageUrl ? (
-                <Image
+                <img
                   src={profile.imageUrl}
                   alt={profile.fullName || 'Profile'}
                   width={64}

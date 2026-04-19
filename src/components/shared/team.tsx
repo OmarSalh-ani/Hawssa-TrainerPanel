@@ -1,5 +1,3 @@
-import Image from 'next/image';
-
 export default function team() {
   return (
     <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16'>
@@ -10,7 +8,7 @@ export default function team() {
         </p>
       </div>
       <div>
-        <Image
+        <img
           src='/assets/Header.svg'
           alt='Team'
           width={500}

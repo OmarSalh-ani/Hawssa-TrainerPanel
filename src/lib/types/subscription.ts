@@ -7,6 +7,8 @@ export interface Subscription {
   price: number;
   daysCount: number;
   duration: string;
+  /** When true, completing payment + admin verification for this plan unlocks all Hawssa releases. */
+  unlocksFullHawssaLibrary?: boolean;
 }
 
 export interface PaymentMethod {
@@ -36,10 +38,21 @@ export interface GetPaymentMethodsResponse {
   paymentMethods: PaymentMethod[];
 }
 
+/** Shape returned by GET subscription/status (differs from catalog Subscription). */
+export interface SubscriptionStatusPayload {
+  subscriptionId?: number;
+  subscriptionName?: string;
+  startDate?: string;
+  endDate?: string;
+  daysRemaining?: number;
+  paidAmount?: number;
+}
+
 export interface GetSubscriptionStatusResponse {
   isExpired: boolean;
   isVerified: boolean;
-  subscription: Subscription | null;
+  subscription: SubscriptionStatusPayload | null;
+  hasFullLibraryAccess?: boolean;
 }
 
 export interface SubscribeResponse {

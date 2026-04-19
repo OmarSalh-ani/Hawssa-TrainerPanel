@@ -4,14 +4,38 @@ import { CardSkeleton } from '@/components/ui/skeleton';
 import { useSubscriptionTypes } from '@/hooks/subscription';
 import { Subscription } from '@/lib/types/subscription';
 import { Calendar, Crown, Star, Zap } from 'lucide-react';
-import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { SubscriptionForm } from './subscription-form';
 
 export function SubscriptionPlans() {
+  const location = useLocation();
+  const libraryPlanRef = useRef<HTMLDivElement | null>(null);
   const { data: subscriptionData, isLoading, error } = useSubscriptionTypes();
   const [selectedPlan, setSelectedPlan] = useState<Subscription | null>(null);
   const [showForm, setShowForm] = useState(false);
+
+  const subscriptions = useMemo(() => {
+    const raw = subscriptionData?.data?.subscriptions || [];
+    const focusFullLibrary = !!(location.state as { focusFullLibrary?: boolean } | null)
+      ?.focusFullLibrary;
+    if (!focusFullLibrary) return raw;
+    return [...raw].sort(
+      (a, b) => Number(!!b.unlocksFullHawssaLibrary) - Number(!!a.unlocksFullHawssaLibrary),
+    );
+  }, [subscriptionData?.data?.subscriptions, location.state]);
+
+  const firstLibraryPlanIndex = useMemo(
+    () => subscriptions.findIndex(p => p.unlocksFullHawssaLibrary),
+    [subscriptions],
+  );
+
+  useEffect(() => {
+    const focusFullLibrary = !!(location.state as { focusFullLibrary?: boolean } | null)
+      ?.focusFullLibrary;
+    if (!focusFullLibrary || firstLibraryPlanIndex < 0 || !libraryPlanRef.current) return;
+    libraryPlanRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, [location.state, firstLibraryPlanIndex, isLoading, subscriptions.length]);
 
   const getPlanIcon = (index: number) => {
     const icons = [Crown, Star, Zap, Calendar];
@@ -59,8 +83,6 @@ export function SubscriptionPlans() {
     );
   }
 
-  const subscriptions = subscriptionData?.data?.subscriptions || [];
-
   return (
     <div className='space-y-8'>
 
@@ -76,18 +98,27 @@ export function SubscriptionPlans() {
           const Icon = getPlanIcon(index);
           const color = getPlanColor(index);
           const isPopular = index === 2; // Mark second plan as popular
+          const isLibraryPlan = !!plan.unlocksFullHawssaLibrary;
 
           return (
             <div
               key={plan.id}
+              ref={index === firstLibraryPlanIndex ? libraryPlanRef : undefined}
               className={`relative bg-white rounded-xl shadow-lg border-2 transition-all duration-300 hover:shadow-xl hover:scale-105 ${
                 isPopular ? 'border-purple-500 ring-2 ring-purple-200' : 'border-gray-200'
-              }`}
+              } ${isLibraryPlan ? 'ring-2 ring-yellow-300 border-yellow-400' : ''}`}
             >
               {isPopular && (
                 <div className='absolute -top-3 left-1/2 transform -translate-x-1/2'>
                   <span className='bg-purple-500 text-white px-4 py-1 rounded-full text-sm font-medium'>
                     Most Popular
+                  </span>
+                </div>
+              )}
+              {isLibraryPlan && (
+                <div className='absolute -top-3 right-4'>
+                  <span className='bg-yellow-400 text-black px-3 py-1 rounded-full text-xs font-semibold'>
+                    Full library
                   </span>
                 </div>
               )}
@@ -108,7 +139,7 @@ export function SubscriptionPlans() {
                 {/* Image */}
                 {plan.image && (
                   <div className='mb-6'>
-                    <Image
+                    <img
                       src={plan.image}
                       alt={plan.title}
                       width={300}

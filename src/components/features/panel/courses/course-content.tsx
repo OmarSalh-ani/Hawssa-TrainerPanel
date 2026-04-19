@@ -75,8 +75,6 @@ export function CourseContent() {
         onPageChange={setCurrentPage}
       />
 
-      {/* Team Section */}
-      <Team />
     </div>
   );
 }

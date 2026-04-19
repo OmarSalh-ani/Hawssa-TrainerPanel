@@ -1,5 +1,3 @@
-// 'use server';
-
 import {
   ForgotPasswordStep1Request,
   ForgotPasswordStep1Response,
@@ -11,8 +9,6 @@ import {
   LoginResponse,
   RegistrationStep1Request,
   RegistrationStep1Response,
-  RegistrationStep2Request,
-  RegistrationStep2Response,
 } from '@/lib/types/auth';
 import { ApiResponse } from '@/lib/utils/api';
 import { callAPI } from '@/lib/utils/config';
@@ -45,21 +41,6 @@ export const registerStep1 = async (
   const endpoint = `/api/${lang}/auth/register`;
   const response = await callAPI('POST', endpoint, data);
   return response as ApiResponse<RegistrationStep1Response>;
-};
-
-/**
- * Verify registration OTP - Step 2: Verify email with OTP
- * @param data OTP verification data
- * @param lang Language code (e.g., 'en', 'ar')
- * @returns Promise<ApiResponse<RegistrationStep2Response>>
- */
-export const verifyRegistrationOTP = async (
-  data: RegistrationStep2Request,
-  lang: string = 'en',
-): Promise<ApiResponse<RegistrationStep2Response>> => {
-  const endpoint = `/api/${lang}/auth/verify-registration-otp`;
-  const response = await callAPI('POST', endpoint, data);
-  return response as ApiResponse<RegistrationStep2Response>;
 };
 
 /**

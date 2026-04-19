@@ -8,6 +8,8 @@ export interface Profile {
   email: string;
   gender: string;
   isMale: boolean;
+  /** When false, Hawssa Releases API is blocked; assigned courses still work. */
+  hasValidHawssaCertificate: boolean;
   social: ProfileSocial;
   gym: ProfileGym | null;
 }

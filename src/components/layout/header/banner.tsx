@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button';
 import { HomeData } from '@/lib/types/home';
-import Image from 'next/image';
 
 interface BannerProps {
   homeData?: HomeData;
@@ -23,7 +22,7 @@ export default function Banner({ homeData }: BannerProps) {
           {/* Main Content */}
           <div className='flex flex-col sm:flex-row items-start sm:items-center gap-4 text-white'>
             <div className='bg-blur-md rounded-full p-2 flex-shrink-0'>
-              <Image src='/assets/medal-star.svg' alt='Hawssa' width={50} height={50} />
+              <img src='/assets/medal-star.svg' alt='Hawssa' width={50} height={50} />
             </div>
             <div className='flex-1'>
               <h2 className='text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-2'>

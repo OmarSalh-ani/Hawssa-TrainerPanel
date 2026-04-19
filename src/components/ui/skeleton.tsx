@@ -21,12 +21,18 @@ export function CardSkeleton({ className }: SkeletonProps) {
   );
 }
 
-// Text skeleton variants
-export function TextSkeleton({ lines = 1, className }: SkeletonProps & { lines?: number }) {
+/** Multi-line placeholder (e.g. article / modal body). */
+export function TextSkeleton({
+  lines = 1,
+  className,
+}: SkeletonProps & { lines?: number }) {
   return (
     <div className={cn('space-y-2', className)}>
       {Array.from({ length: lines }).map((_, i) => (
-        <Skeleton key={i} className={`h-4 ${i === lines - 1 ? 'w-3/4' : 'w-full'}`} />
+        <Skeleton
+          key={i}
+          className={cn('h-4', i === lines - 1 ? 'w-3/4' : 'w-full')}
+        />
       ))}
     </div>
   );
